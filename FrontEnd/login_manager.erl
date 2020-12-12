@@ -1,9 +1,9 @@
 -module(login_managerRPC).
--export([start/0, create_account/2, close_account/2, login/2]).
+-export([start/0, create_account/3, close_account/2, login/2]).
 -import(maps,[update/2, remove/2]).
 
 start() ->
-	Pid = spawn(fun() -> loop(#{#{}}) end),
+	Pid = spawn(fun() -> loop(#{}) end),
 	register(?MODULE, Pid). % ou register(?MODULE, spawn(fun() -> loop(#{}) end)).
 
 rpc(Request) ->
@@ -13,8 +13,8 @@ rpc(Request) ->
 	end.
 
 
-create_account(Username, Password) ->
-	rpc({create_account, Username, Password}).
+create_account(Username, Password,District) ->
+	rpc({create_account, Username, Password,District}).
 
 close_account(Username, Password) ->
 	rpc({close_account, Username, Password}).
@@ -22,20 +22,18 @@ close_account(Username, Password) ->
 login(Username, Password) ->
 	rpc({login, Username, Password}).
 
-loop(Districts) ->
+loop(Accounts) ->
 	receive
 		%{create_account, Username, Password, From} ->
-		{{create_account, Username, Password}, From} ->
+		{{create_account, Username, Password,District}, From} ->
 			case maps:find(Username, Accounts) of
 				error -> 
 					From ! {ok, ?MODULE},
-					loop(maps:put(Username, {Password, false}, Accounts));
+					loop(maps:put(Username, {Password,false,District}, Accounts));
 				_ ->
 					From ! {user_exists, ?MODULE},
 					loop(Accounts)
 			end;
-
-		%{close_account, Username, Password, From} ->
 		{{close_account, Username, Password}, From} ->
 			case maps:find(Username, Accounts) of
 				{ok, {Password, _}} ->
@@ -47,11 +45,12 @@ loop(Districts) ->
 			end;
 		{{login, Username, Password}, From} ->
 			case maps:find(Username, Accounts) of
-				{ok, {Password, _}} ->
-					From ! {ok, ?MODULE},
-					loop(Accounts);
+				{ok, {Pass, _,District}} -> if 
+					Pass == Password -> From ! {ok, ?MODULE},loop(maps:update(Username,{Password,true,District},Accounts));
+				  	true -> From ! {invalid_password, ?MODULE},loop(Accounts)
+				end;	  
 				_ ->
-					From ! {invalid, ?MODULE},
+					From ! {invalid_username, ?MODULE},
 					loop(Accounts)
 			end
 	end.
