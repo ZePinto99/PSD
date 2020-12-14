@@ -1,4 +1,4 @@
--module(login_managerRPC).
+-module(login_manager).
 -export([start/0, create_account/3, close_account/2, login/2]).
 -import(maps,[update/2, remove/2]).
 
