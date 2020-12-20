@@ -1,0 +1,9 @@
+.PHONY: *.erl
+
+RUN_ARGS = erl -pa ../_build/default/lib/chumak/ebin -eval
+
+*.erl:
+	erlc $@
+
+req_client: req_client.erl
+	${RUN_ARGS} "req_client:ma

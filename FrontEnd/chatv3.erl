@@ -33,13 +33,16 @@ user(Sock, Room) ->
   Self = self(),
   receive
     {line, {Self, Data}} ->
+      io:format("user1 ~n", []),
       inet:setopts(Sock, [{active, once}]),
       gen_tcp:send(Sock, Data),
       user(Sock, Room);
     {line, {_, Data}} ->
+      io:format("user2 ~n", []),
       gen_tcp:send(Sock, Data),
       user(Sock, Room);
     {tcp, _, Data} ->
+      io:format("user3 ~n", []),
       Room ! {line, {Self, Data}},
       user(Sock, Room);
     {tcp_closed, _} ->

@@ -1,5 +1,5 @@
 -module(login_manager).
--export([start/0, create_account/3, close_account/2, login/2]).
+-export([start/0, create_account/3, close_account/2, login/2,isloggedIn/1]).
 -import(maps,[update/2, remove/2]).
 
 start() ->
@@ -19,6 +19,12 @@ create_account(Username, Password,District) ->
 close_account(Username, Password) ->
 	rpc({close_account, Username, Password}).
 
+
+isloggedIn(Username) ->
+	rpc({isloggedIn,Username}).
+
+
+
 login(Username, Password) ->
 	rpc({login, Username, Password}).
 
@@ -28,29 +34,36 @@ loop(Accounts) ->
 		{{create_account, Username, Password,District}, From} ->
 			case maps:find(Username, Accounts) of
 				error -> 
-					From ! {ok, ?MODULE},
+					From ! {"ok", ?MODULE},
 					loop(maps:put(Username, {Password,false,District}, Accounts));
 				_ ->
-					From ! {user_exists, ?MODULE},
+					From ! {"user_exists", ?MODULE},
 					loop(Accounts)
 			end;
 		{{close_account, Username, Password}, From} ->
 			case maps:find(Username, Accounts) of
 				{ok, {Password, _}} ->
-					From ! {ok, ?MODULE},
+					From ! {"ok", ?MODULE},
 					loop(maps:remove(Username, Accounts));
 				_ ->
-					From ! {invalid, ?MODULE},
+					From ! {"invalid", ?MODULE},
 					loop(Accounts)
 			end;
 		{{login, Username, Password}, From} ->
 			case maps:find(Username, Accounts) of
 				{ok, {Pass, _,District}} -> if 
-					Pass == Password -> From ! {ok, ?MODULE},loop(maps:update(Username,{Password,true,District},Accounts));
-				  	true -> From ! {invalid_password, ?MODULE},loop(Accounts)
+					Pass == Password -> From ! {"ok", ?MODULE},loop(maps:update(Username,{Password,true,District},Accounts));
+				  	true -> From ! {"invalid_password", ?MODULE},loop(Accounts)
 				end;	  
 				_ ->
-					From ! {invalid_username, ?MODULE},
+					From ! {"invalid_username", ?MODULE},
 					loop(Accounts)
-			end
+			end;
+		{{isloggedIn,Username},From} ->
+			case maps:find(Username,Accounts) of
+				{ok,{_,true,_}} ->  From ! {"ok", ?MODULE};
+				{ok,{_,false,_}} -> From ! {"notLogged", ?MODULE};
+				_ ->  From ! {"invalid_username", ?MODULE}
+				end				
+
 	end.
