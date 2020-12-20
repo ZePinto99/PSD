@@ -15,7 +15,7 @@ public class Client {
         try (ZContext context = new ZContext()) {
             //  Socket to send messages on
             ZMQ.Socket requester = context.createSocket(SocketType.REQ);
-            //requester.connect(F.Server.BOUNDED_ADDRESS);
+            requester.connect("tcp://127.0.0.1:12345");
             ZMQ.Socket subscriber = context.createSocket(SocketType.SUB);
             //subscriber.connect(F.Server.BOUNDED_ADDRESS);
             BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
@@ -64,7 +64,7 @@ public class Client {
     }
 
     private static void login(String username, String password, BufferedReader input, ZMQ.Socket requester) throws IOException {
-        String args = "{login, " + username + ", " + password + "}";
+        String args = "{login," + username + "," + password + "}";
         requester.send(args.getBytes(ZMQ.CHARSET),0);
         //receber resposta
         //if autenticado
