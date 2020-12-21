@@ -25,23 +25,29 @@ loop(SvSocket) ->
 myForEach([])-> ok;
 myForEach([H|T]) -> io:format("Question2: ~p\n", [H]),myForEach(T).
 
-
 myFirst([]) -> {empty,[]};
 myFirst([H|T]) -> {H,T}. 
 
 responde_usr(Lista) ->
-    {Cabeca,Cauda} = myFirst(Lista),
-    {Cabeca2,Cauda2} = myFirst(Cauda),
-    {Cabeca3,Cauda3} = myFirst(Cauda2),
-    {Cabeca4,Cauda4} = myFirst(Cauda3),
+    {Tipo,Info} = myFirst(Lista),
     Login = <<"login">>,
     Registar = <<"registar">>,
-    case Cabeca == Login of
-        true -> Resposta = login_manager:login(Cabeca2,Cabeca3),io:format("received ~p~n", [Resposta]);
-        false -> case Cabeca == Registar of
-            true -> Resposta = login_manager:create_account(Cabeca2,Cabeca3,Cabeca4),io:format("received ~p~n", [Resposta]);
-            false -> io:format("formato desconhecido~n", [])
-        end
+    case Tipo == Login of
+        true -> 
+            {Username,PassT} = myFirst(Info),
+            {Pass,_} = myFirst(PassT),
+            Resposta = login_manager:login(Username,Pass),
+            io:format("received ~p~n", [Resposta]);
+        false -> 
+            case Tipo == Registar of
+                true -> 
+                    {Username,PassT} = myFirst(Info),
+                    {Password,DistrictT} = myFirst(PassT),
+                    {District,_} = myFirst(DistrictT),
+                    Resposta = login_manager:create_account(Username,Password,District),
+                    io:format("received ~p~n", [Resposta]);
+                false -> io:format("formato desconhecido~n", [])
+            end
     end.
 
 
