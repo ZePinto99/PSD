@@ -16,9 +16,12 @@ loop(SvSocket) ->
     Lista = string:split([Reply],",",all),
     myForEach(Lista),
 
-    responde_usr(Lista),
+    responde_usr(Lista, self()),
+    receive
+        {Result, ?MODULE} -> io:format("received ~p~n", [Result]),
+        chumak:send(SvSocket, [Result])        
+    end,
 
-    chumak:send(SvSocket, <<"Hello Friend">>),
     loop(SvSocket).
 
 
@@ -28,26 +31,27 @@ myForEach([H|T]) -> io:format("Question2: ~p\n", [H]),myForEach(T).
 myFirst([]) -> {empty,[]};
 myFirst([H|T]) -> {H,T}. 
 
-responde_usr(Lista) ->
+responde_usr(Lista,From) ->
     {Tipo,Info} = myFirst(Lista),
     Login = <<"login">>,
     Registar = <<"registar">>,
-    case Tipo == Login of
-        true -> 
+    if
+        Tipo == Login ->
             {Username,PassT} = myFirst(Info),
             {Pass,_} = myFirst(PassT),
             Resposta = login_manager:login(Username,Pass),
+            From ! {Resposta, ?MODULE},
             io:format("received ~p~n", [Resposta]);
-        false -> 
-            case Tipo == Registar of
-                true -> 
-                    {Username,PassT} = myFirst(Info),
-                    {Password,DistrictT} = myFirst(PassT),
-                    {District,_} = myFirst(DistrictT),
-                    Resposta = login_manager:create_account(Username,Password,District),
-                    io:format("received ~p~n", [Resposta]);
-                false -> io:format("formato desconhecido~n", [])
-            end
+        Tipo == Registar ->
+            {Username,PassT} = myFirst(Info),
+            {Password,DistrictT} = myFirst(PassT),
+            {District,_} = myFirst(DistrictT),
+            Resposta = login_manager:create_account(Username,Password,District),
+            From ! {Resposta, ?MODULE},
+            io:format("received ~p~n", [Resposta]);
+        false ->
+            From ! {"invalid", ?MODULE},
+            io:format("formato desconhecido~n", [])
     end.
 
 

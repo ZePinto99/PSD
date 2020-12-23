@@ -7,6 +7,8 @@ import org.zeromq.ZMQ;
 import java.io.*;
 import java.net.Socket;
 import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 
 public class Client {
 
@@ -55,21 +57,31 @@ public class Client {
 
     }
 
+    //Nota um request tem de ser seguido de um reply
     private static void registar(String username, String password, String distrito, ZMQ.Socket requester){
-        String args = "{registar, " + username + ", " + password+ ", " + distrito + "}";
+        String args = "registar," + username + "," + password+ "," + distrito;
         requester.send(args.getBytes(ZMQ.CHARSET),0);
         //receber resposta
-        //if registado
-        //else
+        String reply =new String(requester.recv(), StandardCharsets.UTF_8);
+        System.out.println(reply);
+        if(reply.equals("ok")){
+            System.out.println("Foi registado com sucesso");
+        }
+        else
+            System.out.println("ERROR: Credênciais ocupadas");
     }
-
+    //Nota um request tem de ser seguido de um reply
     private static void login(String username, String password, BufferedReader input, ZMQ.Socket requester) throws IOException {
-        String args = "{login," + username + "," + password + "}";
+        String args = "login," + username + "," + password;
         requester.send(args.getBytes(ZMQ.CHARSET),0);
         //receber resposta
-        //if autenticado
-        menu(input, requester);
-        //else
+        String reply =new String(requester.recv(), StandardCharsets.UTF_8);
+        if(reply.equals("ok")){
+            System.out.println("Login feito com sucesso");
+            menu(input, requester);
+        }
+        else
+            System.out.println("Credênciais erradas");
     }
 
     private static void menu(BufferedReader input, ZMQ.Socket requester) throws IOException {
