@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/ServidoresDistritais.iml" filepath="$PROJECT_DIR$/ServidoresDistritais.iml" />
+      <module fileurl="file://$PROJECT_DIR$/src/zeromq.iml" filepath="$PROJECT_DIR$/src/zeromq.iml" />
     </modules>
   </component>
 </project>

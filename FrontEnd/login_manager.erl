@@ -1,5 +1,5 @@
 -module(login_manager).
--export([start/0, create_account/3, close_account/2, login/2,isloggedIn/1]).
+-export([start/0, create_account/3, close_account/2, login/2,isloggedIn/1,getDist/1]).
 -import(maps,[update/2, remove/2]).
 
 start() ->
@@ -23,6 +23,8 @@ close_account(Username, Password) ->
 isloggedIn(Username) ->
 	rpc({isloggedIn,Username}).
 
+getDist(Username) ->
+	rpc({getDist,Username}).
 
 
 login(Username, Password) ->
@@ -64,6 +66,9 @@ loop(Accounts) ->
 				{ok,{_,true,_}} ->  From ! {"ok", ?MODULE};
 				{ok,{_,false,_}} -> From ! {"notLogged", ?MODULE};
 				_ ->  From ! {"invalid_username", ?MODULE}
-				end				
-
+				end;		
+		{{getDist,Username},From} ->
+			case maps:find(Username,Accounts) of
+				{ok,{_,_,District}} ->  From ! {District, ?MODULE}
+				end	
 	end.

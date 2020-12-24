@@ -5,10 +5,7 @@ import org.zeromq.ZContext;
 import org.zeromq.ZMQ;
 
 import java.io.*;
-import java.net.Socket;
-import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
-import java.util.Base64;
 
 public class Client {
 
@@ -85,12 +82,13 @@ public class Client {
     }
 
     private static void menu(BufferedReader input, ZMQ.Socket requester) throws IOException {
-        String  option = input.readLine();
         System.out.println("0-quit 1-Nova localização 2-Nr pessoas por localização 3-Estou infetado! 4-Subscrição de Notificações");
+        String  option = input.readLine();
 
         boolean aux = true;
         int x, y;
         String args;
+        String reply;
         while (aux) {
             switch (option) {
                 case "0":
@@ -102,32 +100,47 @@ public class Client {
                     System.out.println("Inserir coordenada y:");
                     y = Integer.parseInt(input.readLine());
                     //enviar novas cooredenadas
-                    args = "{localizacao, " + x + ", " + y + "}";
+                    args = "localizacao, " + x + ", " + y + "}";
                     requester.send(args.getBytes(ZMQ.CHARSET),0);
                     //receber possível notificação de alteração
-                    //if autenticado
-                    //else
+                    reply =new String(requester.recv(), StandardCharsets.UTF_8);
+                    System.out.println(reply);
+                    if(reply.equals("ok")){
+                        System.out.println("A sua posição foi atualizada");
+                    }
+                    else
+                        System.out.println("ERROR: Posição não atualizada");
                     break;
                 case "2":
                     System.out.println("Inserir coordenada x:");
                     x = Integer.parseInt(input.readLine());
                     System.out.println("Inserir coordenada y:");
                     y = Integer.parseInt(input.readLine());
-                    args = "{localizacao, " + x + ", " + y + "}";
+                    args = "infoLocalizacao, " + x + ", " + y + "}";
                     requester.send(args.getBytes(ZMQ.CHARSET),0);
                     //receber possível notificação de alteração
-                    //if autenticado
-                    //else
+                    reply =new String(requester.recv(), StandardCharsets.UTF_8);
+                    System.out.println(reply);
+                    if(reply.equals("ok")){
+                        System.out.println("Not pessoas na loc");
+                    }
+                    else
+                        System.out.println("ERROR: Busy server cant respond");
                     break;
                 case "3":
                     System.out.println("Quer confirmar que está infetado?\n Pressione 'Y' se sim");
                     String confirmation = input.readLine();
                     if (confirmation.equals("y") || confirmation.equals("Y")){
-                        args = "{infetado" + "}";
+                        args = "infetado";
                         requester.send(args.getBytes(ZMQ.CHARSET),0);
                         //receber possível notificação de alteração
-                        //if autenticado
-                        //else
+                        reply =new String(requester.recv(), StandardCharsets.UTF_8);
+                        System.out.println(reply);
+                        if(reply.equals("ok")){
+                            System.out.println("Foi registado com sucesso");
+                        }
+                        else
+                            System.out.println("ERROR: Credênciais ocupadas");
                         aux = false;
                         break;
                     }
@@ -135,11 +148,26 @@ public class Client {
                     System.out.println("Quer ativar as notificações?\n Pressione 'Y' se sim");
                     String notifications = input.readLine();
                     if (notifications.equals("y") || notifications.equals("Y")){
-                        requester.send("{ativar}".getBytes(ZMQ.CHARSET),0);
+                        requester.send("ativar".getBytes(ZMQ.CHARSET),0);
+                        reply =new String(requester.recv(), StandardCharsets.UTF_8);
+                        System.out.println(reply);
+                        if(reply.equals("ok")){
+                            System.out.println("Notificações públicas ativadas");
+                        }
+                        else
+                            System.out.println("ERROR: Não foi possível ativar notificações públicas");
                         break;
                     }
                     else {
-                        requester.send("{desativar}".getBytes(ZMQ.CHARSET),0);
+                        requester.send("desativar".getBytes(ZMQ.CHARSET),0);
+                        reply =new String(requester.recv(), StandardCharsets.UTF_8);
+                        System.out.println(reply);
+                        if(reply.equals("ok")){
+                            System.out.println("Notificações públicas desativadas");
+                        }
+                        else
+                            System.out.println("ERROR: Não foi possível desativar notificações públicas");
+                        break;
                     }
             }
         }

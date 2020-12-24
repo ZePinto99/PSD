@@ -54,7 +54,7 @@
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../ServidoresDistritais" />
     <property name="settings.editor.selected.configurable" value="configurable.group.appearance" />
   </component>
   <component name="RecentsManager">
@@ -65,10 +65,10 @@
       <recent name="C:\Users\asus\Desktop\Uni\4ªano\PSD" />
     </key>
   </component>
-  <component name="RunManager">
-    <configuration name="Client" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+  <component name="RunManager" selected="Application.Client (1)">
+    <configuration name="Client (1)" type="Application" factoryName="Application" singleton="false" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="Client.Client" />
-      <module name="PSD" />
+      <module name="Cliente" />
       <extension name="coverage">
         <pattern>
           <option name="PATTERN" value="Client.*" />
@@ -79,8 +79,25 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="Client" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="Client" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="Client.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <list>
+      <item itemvalue="Application.Client" />
+      <item itemvalue="Application.Client (1)" />
+    </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Application.Client (1)" />
         <item itemvalue="Application.Client" />
       </list>
     </recent_temporary>
@@ -95,6 +112,7 @@
       <updated>1607782799023</updated>
       <workItem from="1607782800057" duration="320000" />
       <workItem from="1607983636282" duration="2110000" />
+      <workItem from="1608752267603" duration="8363000" />
     </task>
     <servers />
   </component>
@@ -111,22 +129,30 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="WindowStateProjectService">
-    <state width="639" height="177" key="GridCell.Tab.0.bottom" timestamp="1607985449943">
+    <state x="274" y="19" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1608740346624">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
-    <state width="639" height="177" key="GridCell.Tab.0.bottom/0.0.1366.728@0.0.1366.728" timestamp="1607985449943" />
-    <state width="639" height="177" key="GridCell.Tab.0.center" timestamp="1607985449943">
+    <state x="274" y="19" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1366.728@0.0.1366.728" timestamp="1608740346624" />
+    <state x="463" y="119" key="FileChooserDialogImpl" timestamp="1608767926744">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
-    <state width="639" height="177" key="GridCell.Tab.0.center/0.0.1366.728@0.0.1366.728" timestamp="1607985449943" />
-    <state width="639" height="177" key="GridCell.Tab.0.left" timestamp="1607985449943">
+    <state x="463" y="119" key="FileChooserDialogImpl/0.0.1366.728@0.0.1366.728" timestamp="1608767926744" />
+    <state width="639" height="167" key="GridCell.Tab.0.bottom" timestamp="1608773352273">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
-    <state width="639" height="177" key="GridCell.Tab.0.left/0.0.1366.728@0.0.1366.728" timestamp="1607985449943" />
-    <state width="639" height="177" key="GridCell.Tab.0.right" timestamp="1607985449943">
+    <state width="639" height="167" key="GridCell.Tab.0.bottom/0.0.1366.728@0.0.1366.728" timestamp="1608773352273" />
+    <state width="639" height="167" key="GridCell.Tab.0.center" timestamp="1608773352272">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
-    <state width="639" height="177" key="GridCell.Tab.0.right/0.0.1366.728@0.0.1366.728" timestamp="1607985449943" />
+    <state width="639" height="167" key="GridCell.Tab.0.center/0.0.1366.728@0.0.1366.728" timestamp="1608773352272" />
+    <state width="639" height="167" key="GridCell.Tab.0.left" timestamp="1608773352272">
+      <screen x="0" y="0" width="1366" height="728" />
+    </state>
+    <state width="639" height="167" key="GridCell.Tab.0.left/0.0.1366.728@0.0.1366.728" timestamp="1608773352272" />
+    <state width="639" height="167" key="GridCell.Tab.0.right" timestamp="1608773352273">
+      <screen x="0" y="0" width="1366" height="728" />
+    </state>
+    <state width="639" height="167" key="GridCell.Tab.0.right/0.0.1366.728@0.0.1366.728" timestamp="1608773352273" />
     <state x="842" y="278" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1607784035011">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
