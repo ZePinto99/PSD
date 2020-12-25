@@ -93,25 +93,48 @@ menu(SvSocket, DvSocket) ->
 	io:format("Hello menu"),
 	%recebe a opção selecionada pelo cliente
     {ok,Req} = chumak:recv(SvSocket),
-    Option = string:split([Req],",",all),
+    {Option,Info} = string:split([Req],",",all),
     myForEach(Option),
 	case Option of
 		<<"quit">> ->
 			io:format("cliente quer sair");
+			%islogout
 		<<"localizacao">> ->
 			io:format("localizacao"),
+			{x,y} = string:split([Info],",",all),
+			chumak:send(["localizacao",{"x","y"}]),
+			{ok, Req} = chumak:recv(DvSocket),
+			io:format("Recebi confirmação servidor"),
+			chumak:send("Localização atualizada"),
 			menu(SvSocket, DvSocket);
 		<<"infoLocalizacao">> ->
 			io:format("infoLocalizacao"),
+			{x,y} = string:split([Info],",",all),
+			chumak:send(["infoLocalizacao",{"x","y"}]),
+			{ok, Req} = chumak:recv(DvSocket),
+			io:format("Recebi confirmação servidor"),
+			chumak:send("Info da Localização"),
 			menu(SvSocket, DvSocket);
 		<<"infetado">> ->
 			io:format("infetado"),
+			chumak:send({"infetado"}),
+			{ok, Req} = chumak:recv(DvSocket),
+			io:format("Recebi confirmação servidor"),
+			chumak:send("Estado mudado para infetado"),
 			menu(SvSocket, DvSocket);
 		<<"ativar">> ->
 			io:format("ativar notificacoes"),
+			chumak:send({"ativar"}),
+			{ok, Req} = chumak:recv(DvSocket),
+			io:format("Recebi confirmação servidor"),
+			chumak:send("Notificações ativadas"),
 			menu(SvSocket, DvSocket);
 		<<"desativar">> ->
 			io:format("desativar notificacoes"),
+			chumak:send({"desativar"}),
+			{ok, Req} = chumak:recv(DvSocket),
+			io:format("Recebi confirmação servidor"),
+			chumak:send("Notificações desativadas"),
 			menu(SvSocket, DvSocket)
 	end.
 
