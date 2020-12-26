@@ -1,7 +1,7 @@
 public class ServidoresInitializer {
 
     public static void main(String args[]) {
-        int port = 5555;
+        int port = 12346;
         for(int i = 0; i<20;i++)
         {
             LigacaoDistrito distrito = new LigacaoDistrito();

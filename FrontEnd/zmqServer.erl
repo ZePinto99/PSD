@@ -9,7 +9,7 @@ main() ->
     {ok, SvSocket} = chumak:socket(rep, "hello world server"),
     {ok, _BindPid} = chumak:bind(SvSocket, tcp, "localhost", 12345),
     login_manager:start(),
-    %iniciar loop
+    %iniciar loop (!!!!!!!!!!!!!!!!Falta iniciar uma lista com os sockets distritais abertos!!!!!!!!!!!!!!!!)
     loop(SvSocket).
 
 loop(SvSocket) ->
@@ -30,17 +30,16 @@ loop(SvSocket) ->
 
     %vê se o utilizador se autenticou com sucesso (!!!Não funfa!!!)
     if Type == <<"login">> ->
-       		io:format("\n"),
        		io:format("##########"),
-  	     	io:format(Result),
         	if
         		Result == "ok" ->
         			%vai buscar o socket do distrito
-        			io:format("Entrou ok 2"),
-        			connectDistrict(Lista, self()),
-        			receive
-       				{DvSocket, ?MODULE} -> menu(SvSocket, DvSocket)    %abre o menu   
-   					end,
+        			io:format("Entrou ok\n"),
+                    DvSocket = connectDistrict(Lista, self()),
+
+        		
+       				menu(SvSocket, DvSocket),    %abre o menu   
+   			
         			loop(SvSocket);
         		Result == "invalid_password" ->
         			io:format("Entrou invalid"),
@@ -89,31 +88,37 @@ connectDistrict(InfoClient, From) ->
 
     %ligar socket requester que vai fazer pedidos ao servidor distrital
     {ok, DvSocket} = chumak:socket(req, "hello district server"),
-    {ok, _BindPid} = chumak:bind(DvSocket, tcp, "localhost", Sport),
+    {ok, _BindPid} = chumak:connect(DvSocket, tcp, "localhost", Sport),
 
-    io:format("Socket distrito feito"),
+    %chumak:send(DvSocket, ["HELLO"]),
+    %io:format(chumak:recv(DvSocket)),
+
     %retorna o socket do servidor
-    {DvSocket, ?MODULE}
+    DvSocket
 	.
 
+head([X]) -> X;
+head([X|_]) -> X.
+
+%vai ter de receber username/id
 menu(SvSocket, DvSocket) ->
 %System.out.println("0-quit 1-Nova localização 2-Nr pessoas por localização 3-Estou infetado! 4-Subscrição de Notificações");
-	io:format("Hello menu"),
+	io:format("\nHello menu\n"),
+    
 	%recebe a opção selecionada pelo cliente
     {ok,Req} = chumak:recv(SvSocket),
-    {Option,Info} = string:split([Req],",",all),
-    myForEach(Option),
+    {Option, Info} = myFirst(string:split([Req],",",all)),
 	case Option of
 		<<"quit">> ->
 			io:format("cliente quer sair");
 			%islogout
 		<<"localizacao">> ->
-			io:format("localizacao"),
-			{x,y} = string:split([Info],",",all),
-			chumak:send(["localizacao",{"x","y"}]),
-			{ok, Req} = chumak:recv(DvSocket),
-			io:format("Recebi confirmação servidor"),
-			chumak:send("Localização atualizada"),
+			io:format("localizacao\n"),
+            io:format(Info),
+            {X,Y} = myFirst(Info),
+			chumak:send(DvSocket,["localizacao"]),
+			DistRep = chumak:recv(DvSocket),
+			chumak:send(SvSocket,"ok"),
 			menu(SvSocket, DvSocket);
 		<<"infoLocalizacao">> ->
 			io:format("infoLocalizacao"),
@@ -156,12 +161,12 @@ getDistrict(Lista, From) ->
 	%todos os distritos existentes (ordem com a mesma lsita do servidor distrital)
 	Distritos = ["Lisboa", "Porto", "Braga", "Setubal", "Aveiro", "Faro", "Leiria", "Coimbra", "Santarem", "Viseu", "Madeira", "Acores", "Viana Do Castelo", "Vila Real", "Castelo Branco", "Evora", "Guarda", "Beja", "Braganca", "Portalegre"],
 	%envia o socket do distrito do cliente
-    Result = while(Distrito, Distritos, 5555),
+    Result = while(Distrito, Distritos, 12346),
     %io:format("\n\n" + Result + "\n\n"),
 	From ! {Result, ?MODULE},
     Result.
 
 %percorre a lsita até encontrar o distrito do utilizador (vai incrementando o socket)
-while(_, [], _)  -> 5555;
+while(_, [], _)  -> 12346;
 while(D,[D|_],Def) -> Def;
 while(D,[_|T],Def) -> Ed = Def + 1, while(D, T, Ed).

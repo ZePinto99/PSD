@@ -90,6 +90,8 @@ public class Client {
         String args;
         String reply;
         while (aux) {
+            System.out.println("0-quit 1-Nova localização 2-Nr pessoas por localização 3-Estou infetado! 4-Subscrição de Notificações");
+            option = input.readLine();
             switch (option) {
                 case "0":
                     aux = false;
@@ -100,7 +102,7 @@ public class Client {
                     System.out.println("Inserir coordenada y:");
                     y = Integer.parseInt(input.readLine());
                     //enviar novas cooredenadas
-                    args = "localizacao, " + x + ", " + y + "}";
+                    args = "localizacao," + x + "," + y + "}";
                     requester.send(args.getBytes(ZMQ.CHARSET),0);
                     //receber possível notificação de alteração
                     reply =new String(requester.recv(), StandardCharsets.UTF_8);
@@ -116,7 +118,7 @@ public class Client {
                     x = Integer.parseInt(input.readLine());
                     System.out.println("Inserir coordenada y:");
                     y = Integer.parseInt(input.readLine());
-                    args = "infoLocalizacao, " + x + ", " + y + "}";
+                    args = "infoLocalizacao," + x + "," + y + "}";
                     requester.send(args.getBytes(ZMQ.CHARSET),0);
                     //receber possível notificação de alteração
                     reply =new String(requester.recv(), StandardCharsets.UTF_8);

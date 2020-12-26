@@ -16,20 +16,19 @@ public class LigacaoDistrito {
         try (ZContext context = new ZContext()) {
             //  Socket to send messages on
             String distritos[] = {"Lisboa", "Porto", "Braga", "Setubal", "Aveiro", "Faro", "Leiria", "Coimbra", "Santaréqm", "Viseu", "Madeira", "Acores", "Viana Do Castelo", "Vila Real", "Castelo Branco", "Évora", "Guarda", "Beja", "Bragança", "Portalegre"};
-            System.out.println(distritos.length);
-            BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
-            System.out.println("Qual distrito pretende?\n" + Arrays.toString(distritos));
 
             ZMQ.Socket replyer = context.createSocket(SocketType.REP);
-            replyer.connect("tcp://127.0.0.1:" + args[0] + + Integer.parseInt(input.readLine()));
+            replyer.bind("tcp://127.0.0.1:" + args[0]);
+            System.out.println("tcp://127.0.0.1:" + args[0]);
             ZMQ.Socket subscriber = context.createSocket(SocketType.SUB);
             //subscriber.connect(F.Server.BOUNDED_ADDRESS);
 
             boolean aux = true;
             while (aux) {
-                System.out.println("Hello there");
                 String option = new String(replyer.recv(), StandardCharsets.UTF_8);
-                switch (option) {
+                System.out.println(option);
+                replyer.send("qualquer coisa".getBytes(ZMQ.CHARSET),0);
+               switch (option) {
                     case "localizacao":
                         break;
                     case "nrPessoas":
@@ -43,9 +42,6 @@ public class LigacaoDistrito {
                         break;
                 }
             }
-            input.close();
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 }
