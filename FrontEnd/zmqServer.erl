@@ -6,7 +6,7 @@
 main() ->
 	%iniciar o socket reply que responde ao cliente
     application:start(chumak),
-    {ok, SvSocket} = chumak:socket(rep, "hello world server"),
+    {ok, SvSocket} = chumak:socket(router, "hello world server"),
     {ok, _BindPid} = chumak:bind(SvSocket, tcp, "localhost", 12345),
     login_manager:start(),
     %iniciar loop (!!!!!!!!!!!!!!!!Falta iniciar uma lista com os sockets distritais abertos!!!!!!!!!!!!!!!!)
@@ -14,16 +14,17 @@ main() ->
 
 loop(SvSocket) ->
 	%recebe um pedido registo/login
-    {ok,Reply} = chumak:recv(SvSocket),
+    {ok,Reply} = chumak:recv_multipart(SvSocket),
 
     Lista = string:split([Reply],",",all),
     myForEach(Lista),
-
+    io:format("Before respond_usr\n"),
     %Vai fazer o registo/login com as funções do login_manager
     responde_usr(Lista, self()),
+    io:format("After respond_usr\n"),
     receive
         {{Type,Result}, ?MODULE} -> io:format("received ~p~n", [Result]),
-        chumak:send(SvSocket, [Result])        
+        chumak:send_multipart(SvSocket, [Result])        
     end,
 
     io:format(Type),
@@ -36,10 +37,7 @@ loop(SvSocket) ->
         			%vai buscar o socket do distrito
         			io:format("Entrou ok\n"),
                     DvSocket = connectDistrict(Lista, self()),
-
-        		
        				menu(SvSocket, DvSocket),    %abre o menu   
-   			
         			loop(SvSocket);
         		Result == "invalid_password" ->
         			io:format("Entrou invalid"),
@@ -62,6 +60,8 @@ myFirst([H|T]) -> {H,T}.
 
 responde_usr(Lista,From) ->
     {Tipo,Info} = myFirst(Lista),
+    io:format("%%%\n"),
+    io:format(Tipo),
     Login = <<"login">>,
     Registar = <<"registar">>,
     if
@@ -71,6 +71,7 @@ responde_usr(Lista,From) ->
             Resposta = login_manager:login(Username,Pass),
             From ! {{Tipo,Resposta}, ?MODULE};
         Tipo == Registar ->
+            io:format("Entrei registar\n"),
             {Username,PassT} = myFirst(Info),
             {Password,DistrictT} = myFirst(PassT),
             {District,_} = myFirst(DistrictT),
