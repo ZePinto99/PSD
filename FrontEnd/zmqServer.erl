@@ -37,7 +37,7 @@ loop(SvSocket) ->
         		Result == "ok" ->
         			%vai buscar o socket do distrito
         			io:format("Entrou ok 2"),
-        			connectDistrict(Lista),
+        			connectDistrict(Lista, self()),
         			receive
        				{DvSocket, ?MODULE} -> menu(SvSocket, DvSocket)    %abre o menu   
    					end,
@@ -83,12 +83,12 @@ responde_usr(Lista,From) ->
     end.
 
 
-connectDistrict(InfoClient) ->
+connectDistrict(InfoClient, From) ->
     %vai buscar o socket do distrito do cliente
-    Sport = getDistrict(InfoClient),
+    Sport = getDistrict(InfoClient, From),
 
     %ligar socket requester que vai fazer pedidos ao servidor distrital
-    {ok, DvSocket} = chumak:socket(req, "hello world server"),
+    {ok, DvSocket} = chumak:socket(req, "hello district server"),
     {ok, _BindPid} = chumak:bind(DvSocket, tcp, "localhost", Sport),
 
     io:format("Socket distrito feito"),
@@ -146,7 +146,7 @@ menu(SvSocket, DvSocket) ->
 			menu(SvSocket, DvSocket)
 	end.
 
-getDistrict(Lista) ->
+getDistrict(Lista, From) ->
 	io:format("\nget district"),
 	%vou buscar o distrito do cliente
 	{_,Info} = myFirst(Lista),
@@ -154,11 +154,14 @@ getDistrict(Lista) ->
 	Distrito = login_manager:getDist(Username),
 
 	%todos os distritos existentes (ordem com a mesma lsita do servidor distrital)
-	Distritos = {"Lisboa", "Porto", "Braga", "Setubal", "Aveiro", "Faro", "Leiria", "Coimbra", "Santarém", "Viseu", "Madeira", "Acores", "Viana Do Castelo", "Vila Real", "Castelo Branco", "Evora", "Guarda", "Beja", "Bragança", "Portalegre"},
+	Distritos = ["Lisboa", "Porto", "Braga", "Setubal", "Aveiro", "Faro", "Leiria", "Coimbra", "Santarem", "Viseu", "Madeira", "Acores", "Viana Do Castelo", "Vila Real", "Castelo Branco", "Evora", "Guarda", "Beja", "Braganca", "Portalegre"],
 	%envia o socket do distrito do cliente
-	{while(Distrito, Distritos, 5555), ?MODULE}.
+    Result = while(Distrito, Distritos, 5555),
+    %io:format("\n\n" + Result + "\n\n"),
+	From ! {Result, ?MODULE},
+    Result.
 
 %percorre a lsita até encontrar o distrito do utilizador (vai incrementando o socket)
 while(_, [], _)  -> 5555;
 while(D,[D|_],Def) -> Def;
-while(D,[_|T],Def) -> Def = Def + 1, while(D, T, Def).
+while(D,[_|T],Def) -> Ed = Def + 1, while(D, T, Ed).
