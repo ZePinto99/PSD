@@ -31,16 +31,23 @@ loop(SvSocket) ->
     %vê se o utilizador se autenticou com sucesso (!!!Não funfa!!!)
     if Type == <<"login">> ->
        		io:format("\n"),
-        	io:format(Result),
+       		io:format("##########"),
+  	     	io:format(Result),
         	if
-        		Result == <<"ok">> ->
+        		Result == "ok" ->
         			%vai buscar o socket do distrito
+        			io:format("Entrou ok 2"),
         			connectDistrict(Lista),
         			receive
        				{DvSocket, ?MODULE} -> menu(SvSocket, DvSocket)    %abre o menu   
    					end,
         			loop(SvSocket);
-        		Result == <<"invalid_password">> ->
+        		Result == "invalid_password" ->
+        			io:format("Entrou invalid"),
+        			loop(SvSocket);
+        		true ->	
+        			io:format(Result),
+        			io:format("Entrou true"),
         			loop(SvSocket)
         	end;
         Type == <<"registar">> ->
@@ -84,6 +91,7 @@ connectDistrict(InfoClient) ->
     {ok, DvSocket} = chumak:socket(req, "hello world server"),
     {ok, _BindPid} = chumak:bind(DvSocket, tcp, "localhost", Sport),
 
+    io:format("Socket distrito feito"),
     %retorna o socket do servidor
     {DvSocket, ?MODULE}
 	.
@@ -139,13 +147,14 @@ menu(SvSocket, DvSocket) ->
 	end.
 
 getDistrict(Lista) ->
+	io:format("\nget district"),
 	%vou buscar o distrito do cliente
 	{_,Info} = myFirst(Lista),
 	{Username,_} = myFirst(Info),
 	Distrito = login_manager:getDist(Username),
 
 	%todos os distritos existentes (ordem com a mesma lsita do servidor distrital)
-	Distritos = {"Lisboa", "Porto", "Braga", "Setúbal", "Aveiro", "Faro", "Leiria", "Coimbra", "Santarém", "Viseu", "Madeira", "Acores", "Viana Do Castelo", "Vila Real", "Castelo Branco", "Évora", "Guarda", "Beja", "Bragança", "Portalegre"},
+	Distritos = {"Lisboa", "Porto", "Braga", "Setubal", "Aveiro", "Faro", "Leiria", "Coimbra", "Santarém", "Viseu", "Madeira", "Acores", "Viana Do Castelo", "Vila Real", "Castelo Branco", "Evora", "Guarda", "Beja", "Bragança", "Portalegre"},
 	%envia o socket do distrito do cliente
 	{while(Distrito, Distritos, 5555), ?MODULE}.
 
