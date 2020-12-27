@@ -1,5 +1,5 @@
 -module(login_manager).
--export([start/0, create_account/3, close_account/2, login/2,isloggedIn/1,getDist/1]).
+-export([start/0, create_account/3, close_account/2, login/2,isloggedIn/2,getDist/1]).
 -import(maps,[update/2, remove/2]).
 
 start() ->
@@ -20,8 +20,8 @@ close_account(Username, Password) ->
 	rpc({close_account, Username, Password}).
 
 
-isloggedIn(Username) ->
-	rpc({isloggedIn,Username}).
+isloggedIn(Username,Password) ->
+	rpc({isloggedIn,Username,Password}).
 
 getDist(Username) ->
 	rpc({getDist,Username}).
@@ -61,11 +61,19 @@ loop(Accounts) ->
 					From ! {"invalid_username", ?MODULE},
 					loop(Accounts)
 			end;
-		{{isloggedIn,Username},From} ->
+		{{isloggedIn,Username,Password},From} ->
 			case maps:find(Username,Accounts) of
-				{ok,{Password,true,District}} ->  From ! {"ok", ?MODULE},loop(maps:update(Username,{Password,true,District},Accounts));  %%%%%%%%%%%%% erro sem o update
-				{ok,{Password,false,District}} -> From ! {"notLogged", ?MODULE}, loop(maps:update(Username,{Password,false,District},Accounts));
-				_ ->  From ! {"invalid_username", ?MODULE}
+				{ok,{Pass,true,District}} ->   
+					if Pass == Password -> 
+						From ! {District, ?MODULE},loop(maps:update(Username,{Password,true,District},Accounts));          
+					true -> 
+						From ! {"invalid_password", ?MODULE} end; %%%%%%%%%%%%% erro sem o update
+				{ok,{Pass,false,District}} ->  
+					if Pass == Password -> 
+						From ! {"notLogged", ?MODULE}, loop(maps:update(Username,{Password,false,District},Accounts)); 
+					true -> 
+						From ! {"invalid_password", ?MODULE} end; 
+				_ ->  From ! {"invalid_password", ?MODULE}
 				end;		
 		{{getDist,Username},From} ->
 			case maps:find(Username,Accounts) of

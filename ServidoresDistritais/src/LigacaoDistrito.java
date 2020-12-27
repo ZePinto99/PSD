@@ -30,10 +30,6 @@ public class LigacaoDistrito {
                 System.out.println(option);
 
                 String[] arrOfStr = option.split(",");
-                System.out.println(arrOfStr[0]);
-                System.out.println(arrOfStr[1]);
-                System.out.println(arrOfStr[2]);
-                System.out.println(arrOfStr[3]);
                 String request = arrOfStr[0];
                 switch (request) {
                     case "localizacao":
@@ -44,6 +40,7 @@ public class LigacaoDistrito {
                         replyer.send(String.valueOf(sd.getNumUsersLocalizacao(Integer.parseInt(arrOfStr[2]),Integer.parseInt(arrOfStr[3]))).getBytes(ZMQ.CHARSET),0);
                         break;
                     case "infetado":
+                        replyer.send("Still not working on District Server".getBytes(ZMQ.CHARSET));
                         aux = false;
                         break;
                     case "ativar":

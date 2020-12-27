@@ -9,6 +9,7 @@ import java.nio.charset.StandardCharsets;
 
 public class Client {
     private static String myname;
+    private static String mypass;
     public static void main(String[] args) throws IOException {
 
         try (ZContext context = new ZContext()) {
@@ -37,6 +38,7 @@ public class Client {
                         myname=username;
                         System.out.println("Inserir password:");
                         password = input.readLine();
+                        mypass=password;
                         login(username, password, input, requester);
                         break;
                     case "2":
@@ -105,7 +107,7 @@ public class Client {
                     System.out.println("Inserir coordenada y:");
                     y = Integer.parseInt(input.readLine());
                     //enviar novas cooredenadas
-                    args = "localizacao,"+myname+ "," + x + "," + y;
+                    args = "localizacao,"+myname+ "," +mypass + "," + x + "," + y;
                     requester.send(args.getBytes(ZMQ.CHARSET),0);
                     //receber possível notificação de alteração
                     reply =new String(requester.recv(), StandardCharsets.UTF_8);
@@ -121,22 +123,17 @@ public class Client {
                     x = Integer.parseInt(input.readLine());
                     System.out.println("Inserir coordenada y:");
                     y = Integer.parseInt(input.readLine());
-                    args = "infoLocalizacao," +myname+ "," + x + "," + y;
+                    args = "infoLocalizacao," +myname+ "," +mypass + "," + x + "," + y;
                     requester.send(args.getBytes(ZMQ.CHARSET),0);
                     //receber possível notificação de alteração
                     reply =new String(requester.recv(), StandardCharsets.UTF_8);
                     System.out.println(reply);
-                    if(reply.equals("ok")){
-                        System.out.println("Not pessoas na loc");
-                    }
-                    else
-                        System.out.println("ERROR: Busy server cant respond");
                     break;
                 case "3":
                     System.out.println("Quer confirmar que está infetado?\n Pressione 'Y' se sim");
                     String confirmation = input.readLine();
                     if (confirmation.equals("y") || confirmation.equals("Y")){
-                        args = "infetado";
+                        args = "infetado" + "," + myname + "," + mypass;
                         requester.send(args.getBytes(ZMQ.CHARSET),0);
                         //receber possível notificação de alteração
                         reply =new String(requester.recv(), StandardCharsets.UTF_8);
