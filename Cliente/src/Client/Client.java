@@ -14,6 +14,7 @@ public class Client {
         try (ZContext context = new ZContext()) {
             //  Socket to send messages on
             ZMQ.Socket requester = context.createSocket(SocketType.REQ);
+            requester.setIdentity("123".getBytes());
             requester.connect("tcp://127.0.0.1:12345");
             ZMQ.Socket subscriber = context.createSocket(SocketType.SUB);
             //subscriber.connect(F.Server.BOUNDED_ADDRESS);

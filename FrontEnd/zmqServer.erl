@@ -5,8 +5,8 @@
 
 main() ->
 	%iniciar o socket reply que responde ao cliente
-    application:start(chumak),
-    {ok, SvSocket} = chumak:socket(router, "hello world server"),
+    application:ensure_started(chumak),
+    {ok, SvSocket} = chumak:socket(router),
     {ok, _BindPid} = chumak:bind(SvSocket, tcp, "localhost", 12345),
     login_manager:start(),
     %iniciar loop (!!!!!!!!!!!!!!!!Falta iniciar uma lista com os sockets distritais abertos!!!!!!!!!!!!!!!!)
@@ -14,9 +14,11 @@ main() ->
 
 loop(SvSocket) ->
 	%recebe um pedido registo/login
-    {ok,Reply} = chumak:recv_multipart(SvSocket),
-
-    Lista = string:split([Reply],",",all),
+    {ok, [Identity, <<>>, Reply]} = chumak:recv_multipart(SvSocket),
+    io:format("\n"),
+    io:format(Reply),
+    io:format("\n"),
+    Lista = string:split(Reply,",",all),
     myForEach(Lista),
     io:format("Before respond_usr\n"),
     %Vai fazer o registo/login com as funções do login_manager
@@ -24,7 +26,7 @@ loop(SvSocket) ->
     io:format("After respond_usr\n"),
     receive
         {{Type,Result}, ?MODULE} -> io:format("received ~p~n", [Result]),
-        chumak:send_multipart(SvSocket, [Result])        
+        chumak:send_multipart(SvSocket, [Identity, <<>>, list_to_binary(Result)])    
     end,
 
     io:format(Type),
@@ -60,12 +62,11 @@ myFirst([H|T]) -> {H,T}.
 
 responde_usr(Lista,From) ->
     {Tipo,Info} = myFirst(Lista),
-    io:format("%%%\n"),
-    io:format(Tipo),
     Login = <<"login">>,
     Registar = <<"registar">>,
     if
         Tipo == Login ->
+            io:format("Entrei login\n"),
             {Username,PassT} = myFirst(Info),
             {Pass,_} = myFirst(PassT),
             Resposta = login_manager:login(Username,Pass),
@@ -76,10 +77,10 @@ responde_usr(Lista,From) ->
             {Password,DistrictT} = myFirst(PassT),
             {District,_} = myFirst(DistrictT),
             Resposta = login_manager:create_account(Username,Password,District),
-            From ! {{Tipo,Resposta}, ?MODULE};
-        false ->
-            From ! {"invalid", ?MODULE},
-            io:format("formato desconhecido~n", [])
+            From ! {{Tipo,Resposta}, ?MODULE}
+        %true ->
+         %   From ! {"invalid", ?MODULE},
+          %  io:format("formato desconhecido~n", [])
     end.
 
 
@@ -97,9 +98,6 @@ connectDistrict(InfoClient, From) ->
     %retorna o socket do servidor
     DvSocket
 	.
-
-head([X]) -> X;
-head([X|_]) -> X.
 
 %vai ter de receber username/id
 menu(SvSocket, DvSocket) ->
