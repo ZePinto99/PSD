@@ -9,10 +9,11 @@ main() ->
     {ok, SvSocket} = chumak:socket(router),
     {ok, _BindPid} = chumak:bind(SvSocket, tcp, "localhost", 12345),
     login_manager:start(),
+    DvSocket = connectDistrict(self()),
     %iniciar loop (!!!!!!!!!!!!!!!!Falta iniciar uma lista com os sockets distritais abertos!!!!!!!!!!!!!!!!)
-    loop(SvSocket).
+    loop(SvSocket,DvSocket).
 
-loop(SvSocket) ->
+loop(SvSocket,DvSocket) ->
 	%recebe um pedido registo/login
     {ok, [Identity, <<>>, Reply]} = chumak:recv_multipart(SvSocket),
     io:format("\n"),
@@ -22,36 +23,15 @@ loop(SvSocket) ->
     myForEach(Lista),
     io:format("Before respond_usr\n"),
     %Vai fazer o registo/login com as funções do login_manager
-    responde_usr(Lista, self()),
+    responde_usr(Lista, self(), SvSocket, DvSocket,Identity),
     io:format("After respond_usr\n"),
     receive
-        {{Type,Result}, ?MODULE} -> io:format("received ~p~n", [Result]),
+        {{Type,Result,Username}, ?MODULE} -> io:format("received ~p~n", [Result]),
         chumak:send_multipart(SvSocket, [Identity, <<>>, list_to_binary(Result)])    
     end,
 
-    io:format(Type),
 
-    %vê se o utilizador se autenticou com sucesso (!!!Não funfa!!!)
-    if Type == <<"login">> ->
-       		io:format("##########"),
-        	if
-        		Result == "ok" ->
-        			%vai buscar o socket do distrito
-        			io:format("Entrou ok\n"),
-                    DvSocket = connectDistrict(Lista, self()),
-       				menu(SvSocket, DvSocket),    %abre o menu   
-        			loop(SvSocket);
-        		Result == "invalid_password" ->
-        			io:format("Entrou invalid"),
-        			loop(SvSocket);
-        		true ->	
-        			io:format(Result),
-        			io:format("Entrou true"),
-        			loop(SvSocket)
-        	end;
-        Type == <<"registar">> ->
-        	loop(SvSocket)
-   	end.
+    loop(SvSocket,DvSocket).
 
 
 myForEach([])-> ok;
@@ -60,7 +40,7 @@ myForEach([H|T]) -> io:format("Question2: ~p\n", [H]),myForEach(T).
 myFirst([]) -> {empty,[]};
 myFirst([H|T]) -> {H,T}. 
 
-responde_usr(Lista,From) ->
+responde_usr(Lista,From, SvSocket, DvSocket,Identity) ->
     {Tipo,Info} = myFirst(Lista),
     Login = <<"login">>,
     Registar = <<"registar">>,
@@ -70,27 +50,35 @@ responde_usr(Lista,From) ->
             {Username,PassT} = myFirst(Info),
             {Pass,_} = myFirst(PassT),
             Resposta = login_manager:login(Username,Pass),
-            From ! {{Tipo,Resposta}, ?MODULE};
+            From ! {{Tipo,Resposta,Username}, ?MODULE};
         Tipo == Registar ->
             io:format("Entrei registar\n"),
             {Username,PassT} = myFirst(Info),
             {Password,DistrictT} = myFirst(PassT),
             {District,_} = myFirst(DistrictT),
+            io:format([Username,Password,District]),
             Resposta = login_manager:create_account(Username,Password,District),
-            From ! {{Tipo,Resposta}, ?MODULE}
-        %true ->
-         %   From ! {"invalid", ?MODULE},
-          %  io:format("formato desconhecido~n", [])
+            From ! {{Tipo,Resposta,Username}, ?MODULE};
+        true ->
+            {Username,Args} = myFirst(Info),
+            Loggedin = login_manager:isloggedIn(Username),
+            if
+                 Loggedin == "ok" ->
+                    From ! {{Tipo,menu(SvSocket,DvSocket,Identity,Username,Args,Tipo),Username}, ?MODULE};
+                true ->
+                    From ! {{Tipo,"Not logged in",Username}, ?MODULE},
+                    io:format("formato desconhecido~n", [])
+            end
     end.
 
 
-connectDistrict(InfoClient, From) ->
+connectDistrict( From) ->
     %vai buscar o socket do distrito do cliente
-    Sport = getDistrict(InfoClient, From),
+    %Sport = getDistrict(InfoClient, From),
 
     %ligar socket requester que vai fazer pedidos ao servidor distrital
     {ok, DvSocket} = chumak:socket(req, "hello district server"),
-    {ok, _BindPid} = chumak:connect(DvSocket, tcp, "localhost", Sport),
+    {ok, _BindPid} = chumak:connect(DvSocket, tcp, "localhost", 12346),
 
     %chumak:send(DvSocket, ["HELLO"]),
     %io:format(chumak:recv(DvSocket)),
@@ -100,13 +88,13 @@ connectDistrict(InfoClient, From) ->
 	.
 
 %vai ter de receber username/id
-menu(SvSocket, DvSocket) ->
+menu(SvSocket, DvSocket,Identity, Username,Info,Option) ->
 %System.out.println("0-quit 1-Nova localização 2-Nr pessoas por localização 3-Estou infetado! 4-Subscrição de Notificações");
-	io:format("\nHello menu\n"),
+	io:format("\nMain menu\n"),
     
 	%recebe a opção selecionada pelo cliente
-    {ok,Req} = chumak:recv(SvSocket),
-    {Option, Info} = myFirst(string:split([Req],",",all)),
+    
+    
 	case Option of
 		<<"quit">> ->
 			io:format("cliente quer sair");
@@ -115,39 +103,39 @@ menu(SvSocket, DvSocket) ->
 			io:format("localizacao\n"),
             io:format(Info),
             {X,Y} = myFirst(Info),
-			chumak:send(DvSocket,["localizacao"]),
+            Tosend = ["localizacao,",Username,",",X,",",Y], 
+			chumak:send(DvSocket,Tosend),
 			DistRep = chumak:recv(DvSocket),
-			chumak:send(SvSocket,"ok"),
-			menu(SvSocket, DvSocket);
-		<<"infoLocalizacao">> ->
+			"ok";
+        <<"infoLocalizacao">> ->
 			io:format("infoLocalizacao"),
-			{x,y} = string:split([Info],",",all),
-			chumak:send(["infoLocalizacao",{"x","y"}]),
+			{X,Y} = myFirst(Info),
+            Tosend = ["infoLocalizacao,",Username,",",X,",",Y],
+			chumak:send(DvSocket,Tosend),
 			{ok, Req} = chumak:recv(DvSocket),
+            io:format("\n"),
+            io:format(Req),
+            io:format("\n"),
 			io:format("Recebi confirmação servidor"),
-			chumak:send("Info da Localização"),
-			menu(SvSocket, DvSocket);
+			binary:bin_to_list(Req);
 		<<"infetado">> ->
 			io:format("infetado"),
 			chumak:send({"infetado"}),
 			{ok, Req} = chumak:recv(DvSocket),
 			io:format("Recebi confirmação servidor"),
-			chumak:send("Estado mudado para infetado"),
-			menu(SvSocket, DvSocket);
+			chumak:send_multipart(SvSocket,[Identity, <<>>,<<"Estado mudado para infetado">>]);
 		<<"ativar">> ->
 			io:format("ativar notificacoes"),
 			chumak:send({"ativar"}),
 			{ok, Req} = chumak:recv(DvSocket),
 			io:format("Recebi confirmação servidor"),
-			chumak:send("Notificações ativadas"),
-			menu(SvSocket, DvSocket);
+			chumak:send_multipart(SvSocket,[Identity, <<>>,<<"Notificações ativadas">>]);
 		<<"desativar">> ->
 			io:format("desativar notificacoes"),
 			chumak:send({"desativar"}),
 			{ok, Req} = chumak:recv(DvSocket),
 			io:format("Recebi confirmação servidor"),
-			chumak:send("Notificações desativadas"),
-			menu(SvSocket, DvSocket)
+			chumak:send_multipart(SvSocket,[Identity, <<>>,<<"Notificações desativadas">>])
 	end.
 
 getDistrict(Lista, From) ->

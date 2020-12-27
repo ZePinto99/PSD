@@ -3,18 +3,21 @@ package Client;
 import org.zeromq.SocketType;
 import org.zeromq.ZContext;
 import org.zeromq.ZMQ;
-
+import java.util.*;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 
 public class Client {
-
+    private static String myname;
     public static void main(String[] args) throws IOException {
 
         try (ZContext context = new ZContext()) {
             //  Socket to send messages on
             ZMQ.Socket requester = context.createSocket(SocketType.REQ);
-            requester.setIdentity("123".getBytes());
+            String processName =
+                    java.lang.management.ManagementFactory.getRuntimeMXBean().getName();
+           long pid =  Long.parseLong(processName.split("@")[0]);
+            requester.setIdentity(String.valueOf(pid).getBytes());
             requester.connect("tcp://127.0.0.1:12345");
             ZMQ.Socket subscriber = context.createSocket(SocketType.SUB);
             //subscriber.connect(F.Server.BOUNDED_ADDRESS);
@@ -31,6 +34,7 @@ public class Client {
                     case "1":
                         System.out.println("Inserir :");
                         username = input.readLine();
+                        myname=username;
                         System.out.println("Inserir password:");
                         password = input.readLine();
                         login(username, password, input, requester);
@@ -91,8 +95,6 @@ public class Client {
         String args;
         String reply;
         while (aux) {
-            System.out.println("0-quit 1-Nova localização 2-Nr pessoas por localização 3-Estou infetado! 4-Subscrição de Notificações");
-            option = input.readLine();
             switch (option) {
                 case "0":
                     aux = false;
@@ -103,7 +105,7 @@ public class Client {
                     System.out.println("Inserir coordenada y:");
                     y = Integer.parseInt(input.readLine());
                     //enviar novas cooredenadas
-                    args = "localizacao," + x + "," + y + "}";
+                    args = "localizacao,"+myname+ "," + x + "," + y;
                     requester.send(args.getBytes(ZMQ.CHARSET),0);
                     //receber possível notificação de alteração
                     reply =new String(requester.recv(), StandardCharsets.UTF_8);
@@ -119,7 +121,7 @@ public class Client {
                     x = Integer.parseInt(input.readLine());
                     System.out.println("Inserir coordenada y:");
                     y = Integer.parseInt(input.readLine());
-                    args = "infoLocalizacao," + x + "," + y + "}";
+                    args = "infoLocalizacao," +myname+ "," + x + "," + y;
                     requester.send(args.getBytes(ZMQ.CHARSET),0);
                     //receber possível notificação de alteração
                     reply =new String(requester.recv(), StandardCharsets.UTF_8);
@@ -173,6 +175,8 @@ public class Client {
                         break;
                     }
             }
+            System.out.println("0-quit 1-Nova localização 2-Nr pessoas por localização 3-Estou infetado! 4-Subscrição de Notificações");
+            option = input.readLine();
         }
     }
 }

@@ -9,7 +9,6 @@ import org.zeromq.ZContext;
 import org.zeromq.ZMQ;
 
 public class LigacaoDistrito {
-    private ServidorDistrital sd;
 
     public static void main(String args[]) {
         System.out.println(args[0]);
@@ -23,15 +22,26 @@ public class LigacaoDistrito {
             ZMQ.Socket subscriber = context.createSocket(SocketType.SUB);
             //subscriber.connect(F.Server.BOUNDED_ADDRESS);
 
+            ServidorDistrital sd = new ServidorDistrital(args[0],10);
+
             boolean aux = true;
             while (aux) {
                 String option = new String(replyer.recv(), StandardCharsets.UTF_8);
                 System.out.println(option);
-                replyer.send("qualquer coisa".getBytes(ZMQ.CHARSET),0);
-               switch (option) {
+
+                String[] arrOfStr = option.split(",");
+                System.out.println(arrOfStr[0]);
+                System.out.println(arrOfStr[1]);
+                System.out.println(arrOfStr[2]);
+                System.out.println(arrOfStr[3]);
+                String request = arrOfStr[0];
+                switch (request) {
                     case "localizacao":
+                        sd.moveTo(arrOfStr[1],Integer.parseInt(arrOfStr[2]),Integer.parseInt(arrOfStr[3]));
+                        replyer.send("Received".getBytes(ZMQ.CHARSET),0);
                         break;
-                    case "nrPessoas":
+                    case "infoLocalizacao":
+                        replyer.send(String.valueOf(sd.getNumUsersLocalizacao(Integer.parseInt(arrOfStr[2]),Integer.parseInt(arrOfStr[3]))).getBytes(ZMQ.CHARSET),0);
                         break;
                     case "infetado":
                         aux = false;

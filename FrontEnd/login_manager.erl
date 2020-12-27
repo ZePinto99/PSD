@@ -63,8 +63,8 @@ loop(Accounts) ->
 			end;
 		{{isloggedIn,Username},From} ->
 			case maps:find(Username,Accounts) of
-				{ok,{_,true,_}} ->  From ! {"ok", ?MODULE};
-				{ok,{_,false,_}} -> From ! {"notLogged", ?MODULE};
+				{ok,{Password,true,District}} ->  From ! {"ok", ?MODULE},loop(maps:update(Username,{Password,true,District},Accounts));  %%%%%%%%%%%%% erro sem o update
+				{ok,{Password,false,District}} -> From ! {"notLogged", ?MODULE}, loop(maps:update(Username,{Password,false,District},Accounts));
 				_ ->  From ! {"invalid_username", ?MODULE}
 				end;		
 		{{getDist,Username},From} ->
