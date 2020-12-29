@@ -10,7 +10,7 @@ import java.nio.charset.StandardCharsets;
 public class Client {
     private static String myname;
     private static String mypass;
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] dab) throws IOException {
 
         try (ZContext context = new ZContext()) {
             //  Socket to send messages on
@@ -20,8 +20,25 @@ public class Client {
            long pid =  Long.parseLong(processName.split("@")[0]);
             requester.setIdentity(String.valueOf(pid).getBytes());
             requester.connect("tcp://127.0.0.1:12345");
-            ZMQ.Socket subscriber = context.createSocket(SocketType.SUB);
-            //subscriber.connect(F.Server.BOUNDED_ADDRESS);
+
+            String[] args = {"8888"};
+            ZMQ.Socket socket = context.createSocket(SocketType.SUB);
+            socket.connect("tcp://localhost:" + args[0]);
+
+            Thread t = new Thread(() -> {
+                if (args.length == 1)
+                    socket.subscribe("arroz".getBytes());
+                else for (int i = 1; i < args.length; i++)
+                    socket.subscribe(args[i].getBytes());
+                int xaxada = 10;
+                while (xaxada > 0) {
+                    byte[] msg = socket.recv();
+                    System.out.println(new String(msg));
+                    xaxada--;
+                }
+            });
+            t.start();
+
             BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
 
             boolean aux = true;
@@ -100,7 +117,11 @@ public class Client {
             switch (option) {
                 case "0":
                     aux = false;
-                    break;
+                    args = "quit,"+myname+ "," +mypass;
+                    requester.send(args.getBytes(ZMQ.CHARSET),0);
+                    reply =new String(requester.recv(), StandardCharsets.UTF_8);
+                    System.out.println(reply);
+                    return;
                 case "1":
                     System.out.println("Inserir coordenada x:");
                     x = Integer.parseInt(input.readLine());
