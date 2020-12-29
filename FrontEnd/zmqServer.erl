@@ -11,7 +11,6 @@ main() ->
     login_manager:start(),
     Distritos = ["Lisboa", "Porto", "Braga", "Setubal", "Aveiro", "Faro", "Leiria", "Coimbra", "Santarem", "Viseu", "Madeira", "Acores", "Viana Do Castelo", "Vila Real", "Castelo Branco", "Evora", "Guarda", "Beja", "Braganca", "Portalegre"],
     Dist = connectDistrict(12346,Distritos,#{}),
-    %iniciar loop (!!!!!!!!!!!!!!!!Falta iniciar uma lista com os sockets distritais abertos!!!!!!!!!!!!!!!!)
     loop(SvSocket,Dist).
 
 loop(SvSocket, Distritos) ->
@@ -99,8 +98,8 @@ menu(SvSocket, DvSocket,Identity, Username,Info,Option) ->
     
 	case Option of
 		<<"quit">> ->
-			io:format("cliente quer sair");
-			%islogout
+			io:format("cliente quer sair"),
+            login_manager:logOut(Username);
 		<<"localizacao">> ->
 			io:format("localizacao\n"),
             {X,Y} = myFirst(Info),
@@ -145,5 +144,3 @@ menu(SvSocket, DvSocket,Identity, Username,Info,Option) ->
 while(_, [], _)  -> 12346;
 while(D,[D|_],Def) -> Def;
 while(D,[_|T],Def) -> Ed = Def + 1, while(D, T, Ed).
-
-

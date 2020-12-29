@@ -47,7 +47,7 @@
   <component name="MavenImportPreferences">
     <option name="generalSettings">
       <MavenGeneralSettings>
-        <option name="mavenHome" value="C:\Program Files\JetBrains\IntelliJ IDEA Community Edition 2020.2.3\plugins\maven\lib\maven3" />
+        <option name="mavenHome" value="C:\Program Files\JetBrains\IntelliJ IDEA 2020.2.3\plugins\maven\lib\maven3" />
       </MavenGeneralSettings>
     </option>
   </component>
@@ -60,7 +60,7 @@
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../ServidoresDistritais" />
     <property name="settings.editor.selected.configurable" value="configurable.group.appearance" />
   </component>
   <component name="RecentsManager">
@@ -97,14 +97,47 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="Publisher" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="Client.Publisher" />
+      <module name="Cliente" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="Client.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ServerPub" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="ServerPub" />
+      <module name="Cliente" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Subscriber" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="Subscriber" />
+      <module name="Cliente" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <list>
       <item itemvalue="Application.Client (1)" />
       <item itemvalue="Application.Client" />
+      <item itemvalue="Application.Publisher" />
+      <item itemvalue="Application.ServerPub" />
+      <item itemvalue="Application.Subscriber" />
     </list>
     <recent_temporary>
       <list>
         <item itemvalue="Application.Client (1)" />
+        <item itemvalue="Application.Publisher" />
+        <item itemvalue="Application.Subscriber" />
         <item itemvalue="Application.Client" />
+        <item itemvalue="Application.ServerPub" />
       </list>
     </recent_temporary>
   </component>
@@ -123,6 +156,9 @@
       <workItem from="1608994283006" duration="5587000" />
       <workItem from="1609006565445" duration="8369000" />
       <workItem from="1609080660498" duration="5973000" />
+      <workItem from="1609251979963" duration="841000" />
+      <workItem from="1609257299791" duration="6367000" />
+      <workItem from="1609263747893" duration="3673000" />
     </task>
     <servers />
   </component>
@@ -139,39 +175,39 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="274" y="19" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1609004743662">
+    <state x="274" y="0" width="1092" height="728" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1609266299289">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
-    <state x="274" y="19" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1366.728@0.0.1366.728" timestamp="1609004743662" />
-    <state x="651" y="170" key="FileChooserDialogImpl" timestamp="1609098475957">
-      <screen x="0" y="0" width="1920" height="1040" />
+    <state x="274" y="0" width="1092" height="728" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1366.728@0.0.1366.728" timestamp="1609266299289" />
+    <state x="463" y="119" key="FileChooserDialogImpl" timestamp="1609257381820">
+      <screen x="0" y="0" width="1366" height="728" />
     </state>
     <state x="651" y="170" key="FileChooserDialogImpl/-1366.0.1366.728/0.0.1920.1040@0.0.1920.1040" timestamp="1609098475957" />
-    <state x="463" y="119" key="FileChooserDialogImpl/0.0.1366.728@0.0.1366.728" timestamp="1609080711340" />
-    <state width="1323" height="271" key="GridCell.Tab.0.bottom" timestamp="1609110173776">
+    <state x="463" y="119" key="FileChooserDialogImpl/0.0.1366.728@0.0.1366.728" timestamp="1609257381820" />
+    <state width="1323" height="161" key="GridCell.Tab.0.bottom" timestamp="1609267330863">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
     <state width="1323" height="421" key="GridCell.Tab.0.bottom/-1366.0.1366.728/0.0.1920.1040@-1366.0.1366.728" timestamp="1609098262309" />
     <state width="1877" height="421" key="GridCell.Tab.0.bottom/-1366.0.1366.728/0.0.1920.1040@0.0.1920.1040" timestamp="1609098614117" />
-    <state width="1323" height="271" key="GridCell.Tab.0.bottom/0.0.1366.728@0.0.1366.728" timestamp="1609110173776" />
-    <state width="1323" height="271" key="GridCell.Tab.0.center" timestamp="1609110173775">
+    <state width="1323" height="161" key="GridCell.Tab.0.bottom/0.0.1366.728@0.0.1366.728" timestamp="1609267330863" />
+    <state width="1323" height="161" key="GridCell.Tab.0.center" timestamp="1609267330863">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
     <state width="1323" height="421" key="GridCell.Tab.0.center/-1366.0.1366.728/0.0.1920.1040@-1366.0.1366.728" timestamp="1609098262309" />
     <state width="1877" height="421" key="GridCell.Tab.0.center/-1366.0.1366.728/0.0.1920.1040@0.0.1920.1040" timestamp="1609098614117" />
-    <state width="1323" height="271" key="GridCell.Tab.0.center/0.0.1366.728@0.0.1366.728" timestamp="1609110173775" />
-    <state width="1323" height="271" key="GridCell.Tab.0.left" timestamp="1609110173772">
+    <state width="1323" height="161" key="GridCell.Tab.0.center/0.0.1366.728@0.0.1366.728" timestamp="1609267330863" />
+    <state width="1323" height="161" key="GridCell.Tab.0.left" timestamp="1609267330863">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
     <state width="1323" height="421" key="GridCell.Tab.0.left/-1366.0.1366.728/0.0.1920.1040@-1366.0.1366.728" timestamp="1609098262309" />
     <state width="1877" height="421" key="GridCell.Tab.0.left/-1366.0.1366.728/0.0.1920.1040@0.0.1920.1040" timestamp="1609098614117" />
-    <state width="1323" height="271" key="GridCell.Tab.0.left/0.0.1366.728@0.0.1366.728" timestamp="1609110173772" />
-    <state width="1323" height="271" key="GridCell.Tab.0.right" timestamp="1609110173775">
+    <state width="1323" height="161" key="GridCell.Tab.0.left/0.0.1366.728@0.0.1366.728" timestamp="1609267330863" />
+    <state width="1323" height="161" key="GridCell.Tab.0.right" timestamp="1609267330863">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
     <state width="1323" height="421" key="GridCell.Tab.0.right/-1366.0.1366.728/0.0.1920.1040@-1366.0.1366.728" timestamp="1609098262309" />
     <state width="1877" height="421" key="GridCell.Tab.0.right/-1366.0.1366.728/0.0.1920.1040@0.0.1920.1040" timestamp="1609098614117" />
-    <state width="1323" height="271" key="GridCell.Tab.0.right/0.0.1366.728@0.0.1366.728" timestamp="1609110173775" />
+    <state width="1323" height="161" key="GridCell.Tab.0.right/0.0.1366.728@0.0.1366.728" timestamp="1609267330863" />
     <state x="490" y="175" key="Maven.ArtifactSearchDialog" timestamp="1609087257381">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -180,5 +216,13 @@
       <screen x="0" y="0" width="1366" height="728" />
     </state>
     <state x="842" y="278" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.0.1366.728@0.0.1366.728" timestamp="1607784035011" />
+    <state x="676" y="0" width="697" height="735" key="dock-window-1" timestamp="1609265624791">
+      <screen x="0" y="0" width="1366" height="728" />
+    </state>
+    <state x="676" y="0" width="697" height="735" key="dock-window-1/0.0.1366.728@0.0.1366.728" timestamp="1609265624791" />
+    <state x="131" y="0" key="new project wizard" timestamp="1609264204014">
+      <screen x="0" y="0" width="1366" height="728" />
+    </state>
+    <state x="131" y="0" key="new project wizard/0.0.1366.728@0.0.1366.728" timestamp="1609264204014" />
   </component>
 </project>
