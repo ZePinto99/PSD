@@ -24,24 +24,20 @@ public class Client {
             String[] args = {"8888"};
             ZMQ.Socket socket = context.createSocket(SocketType.SUB);
             socket.connect("tcp://localhost:" + args[0]);
-            if (args.length == 1)
-                socket.subscribe("arroz".getBytes());
-            else for (int i = 1; i < args.length; i++)
-                socket.subscribe(args[i].getBytes());
-            int xaxada = 10;
-            while (xaxada > 0) {
-                byte[] msg = socket.recv();
-                System.out.println(new String(msg));
-                xaxada--;
-                }
 
-       /*     Thread t = new Thread(() -> {
-                while (true) {
-                    byte[] msg = subscriber.recv();
-                    System.out.println(new String(requester.recv(), StandardCharsets.UTF_8));
-                }*/
-          //  });
-         //   t.start();
+            Thread t = new Thread(() -> {
+                if (args.length == 1)
+                    socket.subscribe("arroz".getBytes());
+                else for (int i = 1; i < args.length; i++)
+                    socket.subscribe(args[i].getBytes());
+                int xaxada = 10;
+                while (xaxada > 0) {
+                    byte[] msg = socket.recv();
+                    System.out.println(new String(msg));
+                    xaxada--;
+                }
+            });
+            t.start();
 
             BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
 

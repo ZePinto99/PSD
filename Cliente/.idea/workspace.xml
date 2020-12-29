@@ -158,7 +158,7 @@
       <workItem from="1609080660498" duration="5973000" />
       <workItem from="1609251979963" duration="841000" />
       <workItem from="1609257299791" duration="6367000" />
-      <workItem from="1609263747893" duration="3673000" />
+      <workItem from="1609263747893" duration="4392000" />
     </task>
     <servers />
   </component>
@@ -179,6 +179,10 @@
       <screen x="0" y="0" width="1366" height="728" />
     </state>
     <state x="274" y="0" width="1092" height="728" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1366.728@0.0.1366.728" timestamp="1609266299289" />
+    <state x="413" y="111" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog" timestamp="1609267537791">
+      <screen x="0" y="0" width="1366" height="728" />
+    </state>
+    <state x="413" y="111" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.0.1366.728@0.0.1366.728" timestamp="1609267537791" />
     <state x="463" y="119" key="FileChooserDialogImpl" timestamp="1609257381820">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
