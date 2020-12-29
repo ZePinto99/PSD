@@ -4,7 +4,7 @@ public class ServidorDistrital {
     private final String nome;
     private final int aresta;
     private List<String>[][] mapa; //matriz de ArrayLists de IDs dos users, para cada localização do distrito
-    private Map<String,ArrayList<String>> contactos;
+    private Map<String,ArrayList<String>> contactos; //utilizador -> lista contactos que teve
     private List<String> notificacoes; //pseudo lista de users->sockets a notificar
     private int numUtilizadores;
     private int numInfetados;
@@ -12,7 +12,7 @@ public class ServidorDistrital {
     public ServidorDistrital(String nome, int aresta) {
         this.nome = nome;
         this.aresta = aresta;
-        this.mapa = new ArrayList[100][100];
+        this.mapa = new ArrayList[aresta][aresta];
         this.contactos = new HashMap<>();
         this.notificacoes = new ArrayList<>();
     }
@@ -33,7 +33,7 @@ public class ServidorDistrital {
         return numUtilizadores;
     }
 
-    public void entradaUtilizador(int utilizadores) {
+    public void entradaUtilizador() {
         this.numUtilizadores++;
     }
 
@@ -57,27 +57,31 @@ public class ServidorDistrital {
     }
 
     public void moveTo (String user, int x, int y){
-        // retirar da antiga localização
-        int oldX, oldY;
+        // descobrir e retirar da antiga localização
+        int oldX = -1, oldY = -1;
+        boolean primeiraEntrada = true;
         for (int row = 0; row < aresta; row++) {
             for (int col = 0; col < aresta; col++) {
                 if(mapa[row][col] != null && mapa[row][col].contains(user)){
+                    primeiraEntrada = false;
                     oldX = row; oldY = col;
                     mapa[row][col].remove(user);
-                    // notificar caso a localização fique vazia
+                    // notificar caso a saída da localização
                     notifSaidaLocal(oldX,oldY);
+                    // notificar caso a localização fique vazia
                     if(mapa[oldX][oldY].isEmpty()) notifLocalVazia(oldX,oldY);
                     break;
                 }
             }
         }
+        // primeira entrada no distrito
+        if(primeiraEntrada) entradaUtilizador();
         // mover para nova localização
-        if(mapa[x][y] != null && !mapa[x][y].contains(user)){
-            this.atualizarContactos(user,x,y);
-
+        if(mapa[x][y] == null) mapa[x][y] = new ArrayList<>();
+        if(!mapa[x][y].contains(user)){
+            this.atualizarContactos(user, x, y);
+            mapa[x][y].add(user);
         }
-        mapa[x][y] = new ArrayList<>();
-        mapa[x][y].add(user);
         // notificar entrada em localização
         notifEntradaLocal(x,y);
     }
@@ -109,7 +113,7 @@ public class ServidorDistrital {
         }
     }
 
-    private void notifInfetado(int infetado) {
+    private void notifInfetado(String infetado) {
         this.numInfetados++;
         for(String elem : notificacoes){
             //notificar subscritos de um distrito
