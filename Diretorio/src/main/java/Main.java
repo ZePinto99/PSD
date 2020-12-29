@@ -1,10 +1,9 @@
-import helloworld.HelloWorldConfiguration;
 import io.dropwizard.Application;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 
-import resources.HelloWorldResource;
-import health.TemplateHealthCheck;
+import resources.DiretorioResource;
+import Testes.TemplateHealthCheck;
 
 public class Main extends Application<DiretorioConfiguration> {
 
@@ -24,7 +23,7 @@ public class Main extends Application<DiretorioConfiguration> {
     @Override
     public void run(final DiretorioConfiguration configuration, final Environment environment) {
 
-        environment.jersey().register(new HelloWorldResource(configuration.template, configuration.defaultName));
+        environment.jersey().register(new DiretorioResource());
         environment.healthChecks().register("template", new TemplateHealthCheck(configuration.template));
     }
 
