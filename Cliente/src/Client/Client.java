@@ -9,6 +9,7 @@ import java.nio.charset.StandardCharsets;
 
 public class Client {
     private static String myname;
+    private static String hear = "?" + myname + "?";
     private static String mypass;
     public static void main(String[] dab) throws IOException {
 
@@ -21,20 +22,18 @@ public class Client {
             requester.setIdentity(String.valueOf(pid).getBytes());
             requester.connect("tcp://127.0.0.1:12345");
 
-            String[] args = {"8888"};
+            String[] args = {"9999"};
             ZMQ.Socket socket = context.createSocket(SocketType.SUB);
             socket.connect("tcp://localhost:" + args[0]);
 
             Thread t = new Thread(() -> {
                 if (args.length == 1)
-                    socket.subscribe("arroz".getBytes());
+                    socket.subscribe(hear.getBytes());
                 else for (int i = 1; i < args.length; i++)
                     socket.subscribe(args[i].getBytes());
-                int xaxada = 10;
-                while (xaxada > 0) {
+                while (true) {
                     byte[] msg = socket.recv();
                     System.out.println(new String(msg));
-                    xaxada--;
                 }
             });
             t.start();

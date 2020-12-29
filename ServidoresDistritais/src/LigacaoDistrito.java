@@ -40,8 +40,9 @@ public class LigacaoDistrito {
                         replyer.send(String.valueOf(sd.getNumUsersLocalizacao(Integer.parseInt(arrOfStr[2]),Integer.parseInt(arrOfStr[3]))).getBytes(ZMQ.CHARSET),0);
                         break;
                     case "infetado":
-                        replyer.send("Still not working on District Server".getBytes(ZMQ.CHARSET));
-                        aux = false;
+                        replyer.send("ze,eu,manel".getBytes(ZMQ.CHARSET),0);
+                        //String option = new String(replyer.recv(), StandardCharsets.UTF_8);
+                        //replyer.send("ze,eu,manel".getBytes(ZMQ.CHARSET),0);
                         break;
                     case "ativar":
                         break;
@@ -52,3 +53,5 @@ public class LigacaoDistrito {
         }
     }
 }
+
+

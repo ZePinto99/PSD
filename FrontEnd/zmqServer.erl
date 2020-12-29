@@ -1,9 +1,10 @@
 -module(zmqServer).
 -import(login_manager,[start/0, create_account/3, close_account/2, login/2]).
 
--export([main/0]).
+-export([main/0,publisher/0]).
 
 main() ->
+	Publisher = publisher(),
 	%iniciar o socket reply que responde ao cliente
     application:ensure_started(chumak),
     {ok, SvSocket} = chumak:socket(router),
@@ -11,9 +12,9 @@ main() ->
     login_manager:start(),
     Distritos = ["Lisboa", "Porto", "Braga", "Setubal", "Aveiro", "Faro", "Leiria", "Coimbra", "Santarem", "Viseu", "Madeira", "Acores", "Viana Do Castelo", "Vila Real", "Castelo Branco", "Evora", "Guarda", "Beja", "Braganca", "Portalegre"],
     Dist = connectDistrict(12346,Distritos,#{}),
-    loop(SvSocket,Dist).
+    loop(SvSocket,Dist,Publisher).
 
-loop(SvSocket, Distritos) ->
+loop(SvSocket, Distritos,Publisher) ->
 	%recebe um pedido registo/login
     {ok, [Identity, <<>>, Reply]} = chumak:recv_multipart(SvSocket),
     io:format("\n"),
@@ -23,7 +24,7 @@ loop(SvSocket, Distritos) ->
     myForEach(Lista),
     io:format("Before respond_usr\n"),
     %Vai fazer o registo/login com as funções do login_manager
-    responde_usr(Lista, self(), SvSocket,Identity,Distritos),
+    responde_usr(Lista, self(), SvSocket,Identity,Distritos,Publisher),
     io:format("After respond_usr\n"),
     receive
         {{Type,Result,Username}, ?MODULE} -> io:format("received ~p~n", [Result]),
@@ -31,7 +32,7 @@ loop(SvSocket, Distritos) ->
     end,
 
 
-    loop(SvSocket,Distritos).
+    loop(SvSocket,Distritos,Publisher).
 
 
 myForEach([])-> ok;
@@ -40,7 +41,7 @@ myForEach([H|T]) -> io:format("Question2: ~p\n", [H]),myForEach(T).
 myFirst([]) -> {empty,[]};
 myFirst([H|T]) -> {H,T}. 
 
-responde_usr(Lista,From, SvSocket,Identity, Distritos) ->
+responde_usr(Lista,From, SvSocket,Identity, Distritos,Publisher) ->
     {Tipo,Info} = myFirst(Lista),
     Login = <<"login">>,
     Registar = <<"registar">>,
@@ -71,7 +72,7 @@ responde_usr(Lista,From, SvSocket,Identity, Distritos) ->
                     io:format("formato desconhecido~n", []);
                 true ->
                     DvS = maps:get(binary:bin_to_list(Loggedin),Distritos),
-                    From ! {{Tipo,menu(SvSocket,DvS,Identity,Username,Args,Tipo),Username}, ?MODULE}
+                    From ! {{Tipo,menu(SvSocket,DvS,Identity,Username,Args,Tipo,Publisher,Loggedin),Username}, ?MODULE}
             end
     end.
 
@@ -89,7 +90,7 @@ connectDistrict(X,[Distrito|Next],Distritos) ->
     end.
 
 %vai ter de receber username/id
-menu(SvSocket, DvSocket,Identity, Username,Info,Option) ->
+menu(SvSocket, DvSocket,Identity, Username,Info,Option,Publisher,Distrito) ->
 %System.out.println("0-quit 1-Nova localização 2-Nr pessoas por localização 3-Estou infetado! 4-Subscrição de Notificações");
 	io:format("\nMain menu\n"),
     
@@ -124,6 +125,11 @@ menu(SvSocket, DvSocket,Identity, Username,Info,Option) ->
             Tosend = ["infetado,",Username], 
 			chumak:send(DvSocket,Tosend),
 			{ok, Req} = chumak:recv(DvSocket),
+			Lista = string:split(Req,",",all),
+			sendNotificationInfetado(Publisher,Lista),
+			%chumak:send(DvSocket,""),
+			%{ok, Req} = chumak:recv(DvSocket),
+			%sendNotificationDistrito(Publisher,binary:bin_to_list(Req),Distrito),
 			io:format("Recebi confirmação servidor"),
 			binary:bin_to_list(Req);
 		<<"ativar">> ->
@@ -144,3 +150,63 @@ menu(SvSocket, DvSocket,Identity, Username,Info,Option) ->
 while(_, [], _)  -> 12346;
 while(D,[D|_],Def) -> Def;
 while(D,[_|T],Def) -> Ed = Def + 1, while(D, T, Ed).
+
+
+
+publisher() ->
+    {ok, Socket} = chumak:socket(pub),
+    case chumak:bind(Socket, tcp, "localhost", 9999) of
+        {ok, _BindPid} ->
+            io:format("Binding OK with Pid: ~p\n", [Socket]);
+        {error, Reason} ->
+            io:format("Connection Failed for this reason: ~p\n", [Reason]);
+        X ->
+            io:format("Unhandled reply for bind ~p \n", [X])
+    end,
+    Socket.
+
+
+sendNotificationDistrito(Socket, [H],Distrito) ->
+	ToSend = ["?",H,"?,ATENCAO! Novo infetado no distrito "],
+    ok = chumak:send(Socket,  H),
+    io:format(".");
+sendNotificationDistrito(Socket, [H|T],Distrito) ->
+	ToSend = ["?",H,"?,ATENCAO! Novo infetado no distrito "],
+    ok = chumak:send(Socket,  H),
+    io:format("."),
+    sendNotificationDistrito(Socket, T,Distrito).
+
+
+sendNotificationInfetado(Socket, [H]) ->
+	ToSend = ["?",H,"?,ATENCAO! Esteve em contacto com um infetado."],
+	io:format(ToSend),
+    ok = chumak:send(Socket,  ToSend),
+    io:format(".");
+sendNotificationInfetado(Socket, [H|T]) ->
+	ToSend = ["?",H,"?,ATENCAO! Esteve em contacto com um infetado."],
+	io:format(ToSend),
+    ok = chumak:send(Socket,  ToSend),
+    io:format("."),
+    sendNotificationInfetado(Socket, T).
+
+
+
+    %% This Source Code Form is subject to the terms of the Mozilla Public
+%% License, v. 2.0. If a copy of the MPL was not distributed with this
+%% file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
+
+%%subs() ->
+%%   {ok, Socket} = chumak:socket(sub),
+%%    chumak:connect(Socket, tcp, "localhost", 9999),
+%%%%    loop2(Socket).
+
+%%loop2(Socket) ->
+  %%  io:format("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"),
+    %%{ok, Data1} = chumak:recv_multipart(Socket),
+    %%io:format("Received by multipart ~p\n", [Data1]),
+    %io:format("??????????????????????????????????????????????????????????????????????????????"),
+    %{ok, Data2} = chumak:recv(Socket),
+    %io:format("Received ~p\n", [Data2]),
+    %io:format("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"),
+    %loop2(Socket).
