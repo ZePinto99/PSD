@@ -24,9 +24,10 @@
   <component name="ChangeListManager">
     <list default="true" id="fbeae291-ae5b-46c2-9b75-c22ab54ee11b" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Client/Client.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Client/Client.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FrontEnd/login_manager.erl" beforeDir="false" afterPath="$PROJECT_DIR$/../FrontEnd/login_manager.erl" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../FrontEnd/zmqServer.erl" beforeDir="false" afterPath="$PROJECT_DIR$/../FrontEnd/zmqServer.erl" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../ServidoresDistritais/src/ServidorDistrital.java" beforeDir="false" afterPath="$PROJECT_DIR$/../ServidoresDistritais/src/ServidorDistrital.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../ServidoresDistritais/src/ServidoresInitializer.java" beforeDir="false" afterPath="$PROJECT_DIR$/../ServidoresDistritais/src/ServidoresInitializer.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -203,25 +204,34 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="268" y="275" key="FileChooserDialogImpl/-1366.0.1366.728/0.0.1920.1040@0.0.1920.1040" timestamp="1609324043379" />
-    <state width="1877" height="413" key="GridCell.Tab.0.bottom" timestamp="1609334716403">
+    <state width="1877" height="409" key="GridCell.Tab.0.bottom" timestamp="1609349127364">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="413" key="GridCell.Tab.0.bottom/-1366.0.1366.728/0.0.1920.1040@0.0.1920.1040" timestamp="1609334716403" />
+    <state width="1877" height="409" key="GridCell.Tab.0.bottom/-1366.0.1366.728/0.0.1920.1040@0.0.1920.1040" timestamp="1609349127364" />
     <state width="637" height="345" key="GridCell.Tab.0.bottom/0.0.1366.728@0.0.1366.728" timestamp="1609332354170" />
-    <state width="1877" height="413" key="GridCell.Tab.0.center" timestamp="1609334716403">
+    <state width="1877" height="409" key="GridCell.Tab.0.center" timestamp="1609349127364">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="413" key="GridCell.Tab.0.center/-1366.0.1366.728/0.0.1920.1040@0.0.1920.1040" timestamp="1609334716403" />
+    <state width="1877" height="409" key="GridCell.Tab.0.center/-1366.0.1366.728/0.0.1920.1040@0.0.1920.1040" timestamp="1609349127364" />
     <state width="637" height="345" key="GridCell.Tab.0.center/0.0.1366.728@0.0.1366.728" timestamp="1609332354170" />
-    <state width="1877" height="413" key="GridCell.Tab.0.left" timestamp="1609334716403">
+    <state width="1877" height="409" key="GridCell.Tab.0.left" timestamp="1609349127364">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="413" key="GridCell.Tab.0.left/-1366.0.1366.728/0.0.1920.1040@0.0.1920.1040" timestamp="1609334716403" />
+    <state width="1877" height="409" key="GridCell.Tab.0.left/-1366.0.1366.728/0.0.1920.1040@0.0.1920.1040" timestamp="1609349127364" />
     <state width="637" height="345" key="GridCell.Tab.0.left/0.0.1366.728@0.0.1366.728" timestamp="1609332354170" />
-    <state width="1877" height="413" key="GridCell.Tab.0.right" timestamp="1609334716403">
+    <state width="1877" height="409" key="GridCell.Tab.0.right" timestamp="1609349127364">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="413" key="GridCell.Tab.0.right/-1366.0.1366.728/0.0.1920.1040@0.0.1920.1040" timestamp="1609334716403" />
+    <state width="1877" height="409" key="GridCell.Tab.0.right/-1366.0.1366.728/0.0.1920.1040@0.0.1920.1040" timestamp="1609349127364" />
     <state width="637" height="345" key="GridCell.Tab.0.right/0.0.1366.728@0.0.1366.728" timestamp="1609332354170" />
+    <state x="777" y="434" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1609347752904">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="777" y="434" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/-1366.0.1366.728/0.0.1920.1040@0.0.1920.1040" timestamp="1609347752904" />
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/Client_java$Client__1_.ic" NAME="Client (1) Coverage Results" MODIFIED="1609346990974" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false">
+      <FILTER>Client.*</FILTER>
+    </SUITE>
   </component>
 </project>

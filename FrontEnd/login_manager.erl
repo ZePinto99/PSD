@@ -64,7 +64,7 @@ loop(Accounts) ->
 		{{login, Username, Password}, From} ->
 			case maps:find(Username, Accounts) of
 				{ok, {Pass, _,District,L}} -> if 
-					Pass == Password -> From ! {"ok", ?MODULE},loop(maps:update(Username,{Password,true,District,L},Accounts));
+					Pass == Password -> From ! {L, ?MODULE},loop(maps:update(Username,{Password,true,District,L},Accounts));
 				  	true -> From ! {"invalid_password", ?MODULE},loop(Accounts)
 				end;	  
 				_ ->
@@ -98,6 +98,10 @@ loop(Accounts) ->
 					if length(L) < 3 ->
 						io:format("\n"),
 						io:format("length a funcionar"),
+						Upd = [Not,L],
+						io:format("\n\n\n\n\n\n\n\n---------------->"),
+						io:format(Upd),
+						io:format("\n\n\n\n\n\n\n\n---------------->"),
 						From ! {"ok", ?MODULE},
 						loop(maps:update(Username,{Password,V,District,[Not|L]},Accounts));
 					true ->
@@ -108,11 +112,11 @@ loop(Accounts) ->
 		{{desativar,Username,Not},From} ->
 			case maps:find(Username,Accounts) of
 				{ok,{Password,V,District,L}} ->  
-					if length(L) < 3 ->
-						From ! {"ok", ?MODULE},
+					if length(L) < 4 ->
+						From ! {delete(Not,L), ?MODULE},
 						loop(maps:update(Username,{Password,V,District,delete(Not,L)},Accounts));
 					true ->
-						From ! {"nok", ?MODULE},
+						From ! {L, ?MODULE},
 						loop(Accounts)
 					end
 				end;								

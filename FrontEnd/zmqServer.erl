@@ -51,7 +51,14 @@ responde_usr(Lista,From, SvSocket,Identity, Distritos,Publisher) ->
             {Username,PassT} = myFirst(Info),
             {Pass,_} = myFirst(PassT),
             Resposta = login_manager:login(Username,Pass),
-            From ! {{Tipo,Resposta,Username}, ?MODULE};
+            io:format("\n\n\n\n\n\n\n\n---------------->"),
+            io:format(Resposta),
+            io:format("\n\n\n\n\n\n\n\n---------------->"),
+            if 
+                Resposta == "invalid_password" -> From ! {{Tipo,"invalid_password",Username}, ?MODULE};
+                Resposta == "invalid_username" -> From ! {{Tipo,"invalid_username",Username}, ?MODULE};
+                true -> From ! {{Tipo,listtostring(Resposta),Username}, ?MODULE}
+            end;
         Tipo == Registar ->
             io:format("Entrei registar\n"),
             {Username,PassT} = myFirst(Info),
@@ -116,20 +123,22 @@ menu(SvSocket, DvSocket,Identity, Username,Info,Option,Publisher,Distrito) ->
             {Word,Tail} = myFirst(Lista),
             io:format("yeeeee\n"),
             if
-                Word == "vazia" ->
+                Word == <<"vazia">> ->
                     {OX,OY}= myFirst(Tail),
                     Stringtosend = ["notificacao publica: Saiu uma pessoa da posicao -> (", OX, ",", OY , ",) e esta ficou vazia.   Entrou uma pessoa na posicao (", X,",",Y,")"],
                     sendNotificationDistrito(Publisher,Distrito, Stringtosend),
                     "ok";
-                Word == "saiu"  ->
+                Word == <<"saiu">>  ->
                     {OX,OY}= myFirst(Tail),
                     Stringtosend = ["notificacao publica: Saiu uma pessoa da posicao -> (", OX, ",", OY , ",).   Entrou uma pessoa na posicao (", X,",",Y,")"],
                     sendNotificationDistrito(Publisher,Distrito,Stringtosend ),
                     "ok";
-                Word == "ficou" ->
-                    "Já se encontrava nessa posicao";
-                Word == "entrou" ->
-                    "Já se encontrava nessa posicao";
+                Word == <<"ficou">> ->
+                    "Ja se encontrava nessa posicao";
+                Word == <<"entrou">> ->
+                    Stringtosend = ["Entrou uma pessoa na posicao (", X,",",Y,")"],
+                    sendNotificationDistrito(Publisher,Distrito,Stringtosend ),
+                    "ok";
                 true -> 
                 "NOK"
             end;
@@ -160,18 +169,14 @@ menu(SvSocket, DvSocket,Identity, Username,Info,Option,Publisher,Distrito) ->
 		<<"ativar">> ->
 			io:format("ativar notificacoes"),
             Resposta = login_manager:ativar(Username, Info),
-            %sendNotificationDistrito(Publisher,Lista),
-			%chumak:send({"ativar"}),
-			%{ok, Req} = chumak:recv(DvSocket),
+            io:format(Resposta),
 			io:format("\n"),
             Resposta;
 		<<"desativar">> ->
 			io:format("desativar notificacoes"),
             Resposta = login_manager:desativar(Username, Info),
-			%chumak:send({"desativar"}),
-			%{ok, Req} = chumak:recv(DvSocket),
-			%io:format("Recebi confirmação servidor"),
-            Resposta
+            io:format("desativar notificacoes2.0"),
+            listtostring(Resposta)
 	end.
 
 %percorre a lsita até encontrar o distrito do utilizador (vai incrementando o socket)
@@ -213,6 +218,20 @@ sendNotificationInfetado(Socket, [H|T]) ->
     sendNotificationInfetado(Socket, T).
 
 
+listtostring([]) -> "end,end";
+listtostring([A|T]) -> io:format("\n\n\nCASO 1\n\n\n"),Str = [A,",end"],
+listtostring(T,Str).
+
+
+listtostring([H|T],A) ->io:format("\n\n\nCASO 2\n\n\n"),
+    if
+        H == "" -> 
+            A;
+        true -> 
+            Str = [H,"," , A],
+            listtostring(T,Str)
+    end;        
+listtostring([],A) -> io:format("\n\n\nCASO 3\n\n\n"),A.
 
     %% This Source Code Form is subject to the terms of the Mozilla Public
 %% License, v. 2.0. If a copy of the MPL was not distributed with this

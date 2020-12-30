@@ -68,13 +68,15 @@ public class ServidorDistrital {
         for (int row = 0; row < aresta; row++) {
             for (int col = 0; col < aresta; col++) {
                 if(mapa[row][col] != null && mapa[row][col].contains(user)){
-                    primeiraEntrada = false;
-                    oldX = row; oldY = col;
-                    mapa[row][col].remove(user);
-                    // notificar caso a localização fique vazia
-                    if(mapa[oldX][oldY].isEmpty()) rep = "vazia," + String.valueOf(oldX) + "," + String.valueOf(oldY) + ",";
-                    else rep ="saiu," + String.valueOf(oldX) + "," + String.valueOf(oldY) + ",";
-                    break;
+                    if( row != x && col != y){
+                        primeiraEntrada = false;
+                        oldX = row; oldY = col;
+                        mapa[row][col].remove(user);
+                        // notificar caso a localização fique vazia
+                        if(mapa[oldX][oldY].isEmpty()) rep = "vazia," + String.valueOf(oldX) + "," + String.valueOf(oldY) + ",";
+                        else rep ="saiu," + String.valueOf(oldX) + "," + String.valueOf(oldY) + ",";
+                        break;}
+                    else break;
                 }
             }
         }
@@ -85,7 +87,8 @@ public class ServidorDistrital {
         if(!mapa[x][y].contains(user)){
             this.atualizarContactos(user, x, y);
             mapa[x][y].add(user);
-            rep ="entrou,acabou";
+            if(primeiraEntrada)
+                rep ="entrou,acabou";
         }
         // notificar entrada em localização
 
