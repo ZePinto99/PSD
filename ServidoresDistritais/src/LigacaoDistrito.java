@@ -1,20 +1,19 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-
 import org.zeromq.SocketType;
 import org.zeromq.ZContext;
 import org.zeromq.ZMQ;
 
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
 public class LigacaoDistrito {
 
-    public static void main(String args[]) {
+    public static void main(String[] args) {
         System.out.println(args[0]);
         try (ZContext context = new ZContext()) {
             //  Socket to send messages on
-            String distritos[] = {"Lisboa", "Porto", "Braga", "Setubal", "Aveiro", "Faro", "Leiria", "Coimbra", "Santaréqm", "Viseu", "Madeira", "Acores", "Viana Do Castelo", "Vila Real", "Castelo Branco", "Évora", "Guarda", "Beja", "Bragança", "Portalegre"};
+            String[] distritos = {"Lisboa", "Porto", "Braga", "Setubal", "Aveiro", "Faro", "Leiria", "Coimbra", "Santaréqm", "Viseu", "Madeira", "Acores", "Viana Do Castelo", "Vila Real", "Castelo Branco", "Évora", "Guarda", "Beja", "Bragança", "Portalegre"};
 
             ZMQ.Socket replyer = context.createSocket(SocketType.REP);
             replyer.bind("tcp://127.0.0.1:" + args[0]);
@@ -40,9 +39,11 @@ public class LigacaoDistrito {
                         replyer.send(String.valueOf(sd.getNumUsersLocalizacao(Integer.parseInt(arrOfStr[2]),Integer.parseInt(arrOfStr[3]))).getBytes(ZMQ.CHARSET),0);
                         break;
                     case "infetado":
-                        replyer.send("ze,eu,manel".getBytes(ZMQ.CHARSET),0);
+                        String rep = sd.notifInfetado(arrOfStr[1]);
+                        replyer.send(rep.getBytes(ZMQ.CHARSET),0);
                         //String option = new String(replyer.recv(), StandardCharsets.UTF_8);
-                        //replyer.send("ze,eu,manel".getBytes(ZMQ.CHARSET),0);
+                        //String subs = sd.getNotificacoes();
+                        //replyer.send(subs.getBytes(ZMQ.CHARSET),0);
                         break;
                     case "ativar":
                         break;

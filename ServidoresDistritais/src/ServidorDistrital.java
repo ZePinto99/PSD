@@ -1,4 +1,5 @@
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class ServidorDistrital {
     private final String nome;
@@ -25,8 +26,9 @@ public class ServidorDistrital {
         return aresta;
     }
 
-    public List<String> getNotificacoes() {
-        return notificacoes;
+    public String getNotificacoes() {
+        String rep = this.notificacoes.stream().map(String::valueOf).collect(Collectors.joining(","));
+        return rep;
     }
 
     public int getNumUtilizadores() {
@@ -95,32 +97,29 @@ public class ServidorDistrital {
         }
     }
 
-    private void notifSaidaLocal(int x, int y) {
+    public void notifSaidaLocal(int x, int y) {
         for(String elem : notificacoes){
             //notificar subscritos de um distrito
         }
     }
 
-    private void notifEntradaLocal(int x, int y) {
+    public void notifEntradaLocal(int x, int y) {
         for(String elem : notificacoes){
             //notificar subscritos de um distrito
         }
     }
 
-    private void notifLocalVazia(int x, int y) {
+    public void notifLocalVazia(int x, int y) {
         for(String elem : notificacoes){
             //notificar subscritos de um distrito
         }
     }
 
-    private void notifInfetado(String infetado) {
+    public String notifInfetado(String infetado) {
         this.numInfetados++;
-        for(String elem : notificacoes){
-            //notificar subscritos de um distrito
-        }
-        for(String contacto : contactos.get(infetado)){
-            // notificar todos os contactos
-        }
+        ArrayList<String> list = contactos.get(infetado);
+        String rep = list.stream().map(String::valueOf).collect(Collectors.joining(","));
+        return rep;
     }
 
 }

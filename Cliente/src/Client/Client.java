@@ -3,7 +3,6 @@ package Client;
 import org.zeromq.SocketType;
 import org.zeromq.ZContext;
 import org.zeromq.ZMQ;
-import java.util.*;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 
@@ -11,6 +10,7 @@ public class Client {
     private static String myname;
     private static String hear = "?" + myname + "?";
     private static String mypass;
+
     public static void main(String[] dab) throws IOException {
 
         try (ZContext context = new ZContext()) {
