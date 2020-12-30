@@ -1,3 +1,5 @@
+import org.zeromq.ZMQ;
+
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -58,20 +60,20 @@ public class ServidorDistrital {
             this.notificacoes.remove(user);
     }
 
-    public void moveTo (String user, int x, int y){
+    public String moveTo (String user, int x, int y){
         // descobrir e retirar da antiga localização
         int oldX = -1, oldY = -1;
         boolean primeiraEntrada = true;
+        String rep = this.nome;
         for (int row = 0; row < aresta; row++) {
             for (int col = 0; col < aresta; col++) {
                 if(mapa[row][col] != null && mapa[row][col].contains(user)){
                     primeiraEntrada = false;
                     oldX = row; oldY = col;
                     mapa[row][col].remove(user);
-                    // notificar caso a saída da localização
-                    notifSaidaLocal(oldX,oldY);
                     // notificar caso a localização fique vazia
-                    if(mapa[oldX][oldY].isEmpty()) notifLocalVazia(oldX,oldY);
+                    if(mapa[oldX][oldY].isEmpty()) rep += "," + "vazia," + String.valueOf(oldX) + "," + String.valueOf(oldY);
+                    else rep += "," + "saiu," + String.valueOf(oldX) + "," + String.valueOf(oldY);
                     break;
                 }
             }
@@ -85,7 +87,8 @@ public class ServidorDistrital {
             mapa[x][y].add(user);
         }
         // notificar entrada em localização
-        notifEntradaLocal(x,y);
+        rep += "," + String.valueOf(x) + "," + String.valueOf(y);
+        return rep;
     }
 
     private void atualizarContactos(String user, int x, int y) {
@@ -93,51 +96,25 @@ public class ServidorDistrital {
         ArrayList<String> contactosUser = contactos.get(user);
         for(String elem : temp){
             if(contactosUser!=null && !contactosUser.contains(elem)){
-
                 ArrayList<String> userlist = contactos.get(user);
                 userlist.add(elem);
                 contactos.put(user,userlist);
-
             }else{
-
                 contactos.put(user,new ArrayList<>());
                 ArrayList<String> userlist = contactos.get(user);
                 userlist.add(elem);
                 contactos.put(user,userlist);
-
             }
             if(contactos.get(elem)!= null && !contactos.get(elem).contains(user)){
-
                 ArrayList<String> elemlist = contactos.get(elem);
                 elemlist.add(user);
                 contactos.put(elem,elemlist);
-
             }else{
-
                 contactos.put(elem,new ArrayList<>());
                 ArrayList<String> elemlist = contactos.get(elem);
                 elemlist.add(user);
                 contactos.put(elem,elemlist);
-
             }
-        }
-    }
-
-    public void notifSaidaLocal(int x, int y) {
-        for(String elem : notificacoes){
-            //notificar subscritos de um distrito
-        }
-    }
-
-    public void notifEntradaLocal(int x, int y) {
-        for(String elem : notificacoes){
-            //notificar subscritos de um distrito
-        }
-    }
-
-    public void notifLocalVazia(int x, int y) {
-        for(String elem : notificacoes){
-            //notificar subscritos de um distrito
         }
     }
 
