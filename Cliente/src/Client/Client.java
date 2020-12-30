@@ -8,7 +8,6 @@ import java.nio.charset.StandardCharsets;
 
 public class Client {
     private static String myname;
-    private static String hear = "?" + myname + "?";
     private static String mypass;
 
     public static void main(String[] dab) throws IOException {
@@ -86,14 +85,15 @@ public class Client {
         String reply =new String(requester.recv(), StandardCharsets.UTF_8);
         if(reply.equals("ok")){
             System.out.println("Login feito com sucesso");
-            beginNotifications(subscriber);
-            menu(input, requester);
+            String hear = "?" + username + "?";
+            beginNotifications(subscriber, hear);
+            menu(input, requester, subscriber);
         }
         else
             System.out.println("Credênciais erradas");
     }
 
-    private static void menu(BufferedReader input, ZMQ.Socket requester) throws IOException {
+    private static void menu(BufferedReader input, ZMQ.Socket requester, ZMQ.Socket subscriber) throws IOException {
         System.out.println("0-quit 1-Nova localização 2-Nr pessoas por localização 3-Estou infetado! 4-Subscrição de Notificações");
         String  option = input.readLine();
 
@@ -155,14 +155,19 @@ public class Client {
                         aux = false;
                         break;
                     }
+                    break;
                 case "4":
-                    System.out.println("Quer ativar as notificações?\n Pressione 'Y' se sim");
+                    System.out.println("Quer ativar as notificações?\n Pressione 'Y' se sim outra tecla para desativar");
                     String notifications = input.readLine();
                     if (notifications.equals("y") || notifications.equals("Y")){
-                        requester.send("ativar".getBytes(ZMQ.CHARSET),0);
+                        //System.out.println("Qual distrito quer subscreber?");
+                        //String distrito = input.readLine();
+                        args = "ativar" + "," + myname + "," + mypass + "," + "Braga";
+                        requester.send(args.getBytes(ZMQ.CHARSET),0);
                         reply =new String(requester.recv(), StandardCharsets.UTF_8);
                         System.out.println(reply);
-                        if(reply.equals("ok")){
+                        if(reply.equals("ok")){ //O servidor manda ok se o cliente estiver subscrito a menos de 3 distritos
+                            beginNotifications(subscriber, "Braga");
                             System.out.println("Notificações públicas ativadas");
                         }
                         else
@@ -170,7 +175,8 @@ public class Client {
                         break;
                     }
                     else {
-                        requester.send("desativar".getBytes(ZMQ.CHARSET),0);
+                        args = "desativar" + "," + myname + "," + mypass + "," +"Braga";
+                        requester.send(args.getBytes(ZMQ.CHARSET),0);
                         reply =new String(requester.recv(), StandardCharsets.UTF_8);
                         System.out.println(reply);
                         if(reply.equals("ok")){
@@ -186,7 +192,7 @@ public class Client {
         }
     }
 
-    private static void beginNotifications(ZMQ.Socket socket){
+    private static void beginNotifications(ZMQ.Socket socket, String hear){
         String[] args = {"9999"};
         socket.connect("tcp://localhost:" + args[0]);
 
@@ -194,7 +200,7 @@ public class Client {
             if (args.length == 1)
                 socket.subscribe(hear.getBytes());
             else for (int i = 1; i < args.length; i++)
-                socket.subscribe(args[i].getBytes());
+                socket.subscribe(hear.getBytes());
             while (true) {
                 byte[] msg = socket.recv();
                 System.out.println(new String(msg));

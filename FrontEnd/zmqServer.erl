@@ -70,6 +70,9 @@ responde_usr(Lista,From, SvSocket,Identity, Distritos,Publisher) ->
                 Loggedin == "notLogged" ->
                     From ! {{Tipo,"Not logged in",Username}, ?MODULE},
                     io:format("formato desconhecido~n", []);
+                Loggedin == "invalid_password" ->
+                    From ! {{Tipo,"Not logged in",Username}, ?MODULE},
+                    io:format("formato desconhecido~n", []);    
                 true ->
                     DvS = maps:get(binary:bin_to_list(Loggedin),Distritos),
                     From ! {{Tipo,menu(SvSocket,DvS,Identity,Username,Args,Tipo,Publisher,Loggedin),Username}, ?MODULE}
@@ -108,6 +111,8 @@ menu(SvSocket, DvSocket,Identity, Username,Info,Option,Publisher,Distrito) ->
             io:format(Tosend),
 			chumak:send(DvSocket,Tosend),
 			DistRep = chumak:recv(DvSocket),
+            Lista = string:split(DistRep,",",all),
+            %sendNotificationDistrito(),
 			"ok";
         <<"infoLocalizacao">> ->
 			io:format("infoLocalizacao"),
@@ -129,20 +134,23 @@ menu(SvSocket, DvSocket,Identity, Username,Info,Option,Publisher,Distrito) ->
 			sendNotificationInfetado(Publisher,Lista),
 			%chumak:send(DvSocket,""),
 			%{ok, Req} = chumak:recv(DvSocket),
-			%sendNotificationDistrito(Publisher,binary:bin_to_list(Req),Distrito),
+		    sendNotificationDistrito(Publisher,Distrito),
 			"É Obrigatorio realizar isolamento completo por um periodo minimo de 6 anos.";
 		<<"ativar">> ->
 			io:format("ativar notificacoes"),
-			chumak:send({"ativar"}),
-			{ok, Req} = chumak:recv(DvSocket),
-			io:format("Recebi confirmação servidor"),
-			chumak:send_multipart(SvSocket,[Identity, <<>>,<<"Notificações ativadas">>]);
+            Resposta = login_manager:ativar(Username, Info),
+            %sendNotificationDistrito(Publisher,Lista),
+			%chumak:send({"ativar"}),
+			%{ok, Req} = chumak:recv(DvSocket),
+			io:format("\n"),
+            Resposta;
 		<<"desativar">> ->
 			io:format("desativar notificacoes"),
-			chumak:send({"desativar"}),
-			{ok, Req} = chumak:recv(DvSocket),
-			io:format("Recebi confirmação servidor"),
-			chumak:send_multipart(SvSocket,[Identity, <<>>,<<"Notificações desativadas">>])
+            Resposta = login_manager:desativar(Username, Info),
+			%chumak:send({"desativar"}),
+			%{ok, Req} = chumak:recv(DvSocket),
+			%io:format("Recebi confirmação servidor"),
+            Resposta
 	end.
 
 %percorre a lsita até encontrar o distrito do utilizador (vai incrementando o socket)
@@ -165,15 +173,10 @@ publisher() ->
     Socket.
 
 
-sendNotificationDistrito(Socket, [H],Distrito) ->
-	ToSend = ["?",H,"?,ATENCAO! Novo infetado no distrito "],
-    ok = chumak:send(Socket,  H),
-    io:format(".");
-sendNotificationDistrito(Socket, [H|T],Distrito) ->
-	ToSend = ["?",H,"?,ATENCAO! Novo infetado no distrito "],
-    ok = chumak:send(Socket,  H),
-    io:format("."),
-    sendNotificationDistrito(Socket, T,Distrito).
+sendNotificationDistrito(Socket,Distrito) ->
+	ToSend = [Distrito,",ATENCAO! Novo infetado no distrito "],
+    ok = chumak:send(Socket, Tosend),
+    io:format(".").
 
 
 sendNotificationInfetado(Socket, [H]) ->
