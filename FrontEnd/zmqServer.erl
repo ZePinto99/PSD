@@ -24,10 +24,10 @@ loop(SvSocket, Distritos,Publisher) ->
     myForEach(Lista),
     io:format("Before respond_usr\n"),
     %Vai fazer o registo/login com as funções do login_manager
-    responde_usr(Lista, self(), SvSocket,Identity,Distritos,Publisher),
+    responde_usr(Lista, self(), Distritos,Publisher),
     io:format("After respond_usr\n"),
     receive
-        {{Type,Result,Username}, ?MODULE} -> io:format("received ~p~n", [Result]),
+        {{_,Result,_}, ?MODULE} -> io:format("received ~p~n", [Result]),
         chumak:send_multipart(SvSocket, [Identity, <<>>, list_to_binary(Result)])    
     end,
 
@@ -41,7 +41,7 @@ myForEach([H|T]) -> io:format("Question2: ~p\n", [H]),myForEach(T).
 myFirst([]) -> {empty,[]};
 myFirst([H|T]) -> {H,T}. 
 
-responde_usr(Lista,From, SvSocket,Identity, Distritos,Publisher) ->
+responde_usr(Lista,From, Distritos,Publisher) ->
     {Tipo,Info} = myFirst(Lista),
     Login = <<"login">>,
     Registar = <<"registar">>,
@@ -83,7 +83,7 @@ responde_usr(Lista,From, SvSocket,Identity, Distritos,Publisher) ->
                     io:format("formato desconhecido~n", []);    
                 true ->
                     DvS = maps:get(binary:bin_to_list(Loggedin),Distritos),
-                    From ! {{Tipo,menu(SvSocket,DvS,Identity,Username,Args,Tipo,Publisher,Loggedin),Username}, ?MODULE}
+                    From ! {{Tipo,menu(DvS,Username,Args,Tipo,Publisher,Loggedin),Username}, ?MODULE}
             end
     end.
 
@@ -101,12 +101,11 @@ connectDistrict(X,[Distrito|Next],Distritos) ->
     end.
 
 %vai ter de receber username/id
-menu(SvSocket, DvSocket,Identity, Username,Info,Option,Publisher,Distrito) ->
+menu(DvSocket, Username,Info,Option,Publisher,Distrito) ->
 %System.out.println("0-quit 1-Nova localização 2-Nr pessoas por localização 3-Estou infetado! 4-Subscrição de Notificações");
 	io:format("\nMain menu\n"),
     
-	%recebe a opção selecionada pelo cliente
-    
+	%recebe a opção selecionada pelo cliente    
     
 	case Option of
 		<<"quit">> ->
@@ -126,12 +125,12 @@ menu(SvSocket, DvSocket,Identity, Username,Info,Option,Publisher,Distrito) ->
             if
                 Word == <<"vazia">> ->
                     {OX,OY}= myFirst(Tail),
-                    Stringtosend = ["notificacao publica: Saiu uma pessoa da posicao -> (", OX, ",", OY , ",) e esta ficou vazia.   Entrou uma pessoa na posicao (", X,",",Y,")"],
+                    Stringtosend = ["notificacao publica: Saiu uma pessoa da posicao -> (", OX, ",", OY , ") e esta ficou vazia.   Entrou uma pessoa na posicao (", X,",",Y,")"],
                     sendNotificationDistrito(Publisher,Distrito, Stringtosend),
                     "ok";
                 Word == <<"saiu">>  ->
                     {OX,OY}= myFirst(Tail),
-                    Stringtosend = ["notificacao publica: Saiu uma pessoa da posicao -> (", OX, ",", OY , ",).   Entrou uma pessoa na posicao (", X,",",Y,")"],
+                    Stringtosend = ["notificacao publica: Saiu uma pessoa da posicao -> (", OX, ",", OY , ").   Entrou uma pessoa na posicao (", X,",",Y,")"],
                     sendNotificationDistrito(Publisher,Distrito,Stringtosend ),
                     "ok";
                 Word == <<"ficou">> ->
@@ -180,13 +179,6 @@ menu(SvSocket, DvSocket,Identity, Username,Info,Option,Publisher,Distrito) ->
             io:format("desativar notificacoes2.0"),
             listtostring(Resposta)
 	end.
-
-%percorre a lsita até encontrar o distrito do utilizador (vai incrementando o socket)
-while(_, [], _)  -> 12346;
-while(D,[D|_],Def) -> Def;
-while(D,[_|T],Def) -> Ed = Def + 1, while(D, T, Ed).
-
-
 
 publisher() ->
     {ok, Socket} = chumak:socket(pub),

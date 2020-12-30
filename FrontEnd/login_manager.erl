@@ -67,7 +67,7 @@ loop(Accounts) ->
 					Pass == Password -> From ! {L, ?MODULE},loop(maps:update(Username,{Password,true,District,L,false},Accounts));
 				  	true -> From ! {"invalid_password", ?MODULE},loop(Accounts)
 				end;
-				{ok, {Pass, _,District,L,true}} -> From ! {"Bloq", ?MODULE},
+				{ok, {_, _,_,_,true}} -> From ! {"Bloq", ?MODULE},
 					loop(Accounts);	  
 				_ ->
 					From ! {"invalid_username", ?MODULE},
@@ -124,6 +124,6 @@ loop(Accounts) ->
 				end;								
 		{{setInfetado,Username},From} ->
 			case maps:find(Username,Accounts) of
-				{ok,{Password,V,District,L,Infectado}} ->   From ! {"ok", ?MODULE},loop(maps:update(Username,{Password,V,District,L,true},Accounts))
+				{ok,{Password,V,District,L,_}} ->   From ! {"ok", ?MODULE},loop(maps:update(Username,{Password,V,District,L,true},Accounts))
 				end
 	end.
