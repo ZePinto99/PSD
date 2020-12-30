@@ -22,21 +22,9 @@ public class Client {
             requester.setIdentity(String.valueOf(pid).getBytes());
             requester.connect("tcp://127.0.0.1:12345");
 
-            String[] args = {"9999"};
-            ZMQ.Socket socket = context.createSocket(SocketType.SUB);
-            socket.connect("tcp://localhost:" + args[0]);
 
-            Thread t = new Thread(() -> {
-                if (args.length == 1)
-                    socket.subscribe(hear.getBytes());
-                else for (int i = 1; i < args.length; i++)
-                    socket.subscribe(args[i].getBytes());
-                while (true) {
-                    byte[] msg = socket.recv();
-                    System.out.println(new String(msg));
-                }
-            });
-            t.start();
+            ZMQ.Socket subscriber = context.createSocket(SocketType.SUB);
+
 
             BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
 
@@ -55,7 +43,7 @@ public class Client {
                         System.out.println("Inserir password:");
                         password = input.readLine();
                         mypass=password;
-                        login(username, password, input, requester);
+                        login(username, password, input, requester, subscriber);
                         break;
                     case "2":
                         System.out.println("Inserir :");
@@ -91,13 +79,14 @@ public class Client {
             System.out.println("ERROR: Credênciais ocupadas");
     }
     //Nota um request tem de ser seguido de um reply
-    private static void login(String username, String password, BufferedReader input, ZMQ.Socket requester) throws IOException {
+    private static void login(String username, String password, BufferedReader input, ZMQ.Socket requester, ZMQ.Socket subscriber) throws IOException {
         String args = "login," + username + "," + password;
         requester.send(args.getBytes(ZMQ.CHARSET),0);
         //receber resposta
         String reply =new String(requester.recv(), StandardCharsets.UTF_8);
         if(reply.equals("ok")){
             System.out.println("Login feito com sucesso");
+            beginNotifications(subscriber);
             menu(input, requester);
         }
         else
@@ -195,6 +184,23 @@ public class Client {
             System.out.println("0-quit 1-Nova localização 2-Nr pessoas por localização 3-Estou infetado! 4-Subscrição de Notificações");
             option = input.readLine();
         }
+    }
+
+    private static void beginNotifications(ZMQ.Socket socket){
+        String[] args = {"9999"};
+        socket.connect("tcp://localhost:" + args[0]);
+
+        Thread t = new Thread(() -> {
+            if (args.length == 1)
+                socket.subscribe(hear.getBytes());
+            else for (int i = 1; i < args.length; i++)
+                socket.subscribe(args[i].getBytes());
+            while (true) {
+                byte[] msg = socket.recv();
+                System.out.println(new String(msg));
+            }
+        });
+        t.start();
     }
 }
 
