@@ -110,10 +110,31 @@ menu(SvSocket, DvSocket,Identity, Username,Info,Option,Publisher,Distrito) ->
             Tosend = ["localizacao,",Username,",",X,",",Y], 
             io:format(Tosend),
 			chumak:send(DvSocket,Tosend),
-			DistRep = chumak:recv(DvSocket),
+			{ok,DistRep} = chumak:recv(DvSocket),
             Lista = string:split(DistRep,",",all),
+            io:format("yoooo\n"),
+            {Word,Tail} = myFirst(Lista),
+            io:format("yeeeee\n"),
+            if
+                Word == "vazia" ->
+                    {OX,OY}= myFirst(Tail),
+                    Stringtosend = ["notificacao publica: Saiu uma pessoa da posicao -> (", OX, ",", OY , ",) e esta ficou vazia.   Entrou uma pessoa na posicao (", X,",",Y,")"],
+                    sendNotificationDistrito(Publisher,Distrito, Stringtosend),
+                    "ok";
+                Word == "saiu"  ->
+                    {OX,OY}= myFirst(Tail),
+                    Stringtosend = ["notificacao publica: Saiu uma pessoa da posicao -> (", OX, ",", OY , ",).   Entrou uma pessoa na posicao (", X,",",Y,")"],
+                    sendNotificationDistrito(Publisher,Distrito,Stringtosend ),
+                    "ok";
+                Word == "ficou" ->
+                    "Já se encontrava nessa posicao";
+                Word == "entrou" ->
+                    "Já se encontrava nessa posicao";
+                true -> 
+                "NOK"
+            end;
             %sendNotificationDistrito(),
-			"ok";
+			
         <<"infoLocalizacao">> ->
 			io:format("infoLocalizacao"),
 			{X,Y} = myFirst(Info),
@@ -134,7 +155,7 @@ menu(SvSocket, DvSocket,Identity, Username,Info,Option,Publisher,Distrito) ->
 			sendNotificationInfetado(Publisher,Lista),
 			%chumak:send(DvSocket,""),
 			%{ok, Req} = chumak:recv(DvSocket),
-		    sendNotificationDistrito(Publisher,Distrito),
+		    sendNotificationDistrito(Publisher,Distrito, "ATENCAO! Novo infetado no distrito"),
 			"É Obrigatorio realizar isolamento completo por um periodo minimo de 6 anos.";
 		<<"ativar">> ->
 			io:format("ativar notificacoes"),
@@ -173,9 +194,9 @@ publisher() ->
     Socket.
 
 
-sendNotificationDistrito(Socket,Distrito) ->
-	ToSend = [Distrito,",ATENCAO! Novo infetado no distrito "],
-    ok = chumak:send(Socket, Tosend),
+sendNotificationDistrito(Socket,Distrito, String) ->
+	ToSend = [Distrito,",",String],
+    ok = chumak:send(Socket, ToSend),
     io:format(".").
 
 

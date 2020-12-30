@@ -64,7 +64,7 @@ public class ServidorDistrital {
         // descobrir e retirar da antiga localização
         int oldX = -1, oldY = -1;
         boolean primeiraEntrada = true;
-        String rep = this.nome;
+        String rep = "ficou,acabou";
         for (int row = 0; row < aresta; row++) {
             for (int col = 0; col < aresta; col++) {
                 if(mapa[row][col] != null && mapa[row][col].contains(user)){
@@ -72,8 +72,8 @@ public class ServidorDistrital {
                     oldX = row; oldY = col;
                     mapa[row][col].remove(user);
                     // notificar caso a localização fique vazia
-                    if(mapa[oldX][oldY].isEmpty()) rep += "," + "vazia," + String.valueOf(oldX) + "," + String.valueOf(oldY);
-                    else rep += "," + "saiu," + String.valueOf(oldX) + "," + String.valueOf(oldY);
+                    if(mapa[oldX][oldY].isEmpty()) rep = "vazia," + String.valueOf(oldX) + "," + String.valueOf(oldY) + ",";
+                    else rep ="saiu," + String.valueOf(oldX) + "," + String.valueOf(oldY) + ",";
                     break;
                 }
             }
@@ -85,9 +85,10 @@ public class ServidorDistrital {
         if(!mapa[x][y].contains(user)){
             this.atualizarContactos(user, x, y);
             mapa[x][y].add(user);
+            rep ="entrou,acabou";
         }
         // notificar entrada em localização
-        rep += "," + String.valueOf(x) + "," + String.valueOf(y);
+
         return rep;
     }
 
