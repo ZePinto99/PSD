@@ -14,7 +14,14 @@ import static java.lang.Thread.sleep;
 public class Client {
     private static String myname;
     private static String mypass;
-    private static List<String> districts;
+
+    public static boolean validXY(String x, String y){
+        try {
+            if (Integer.parseInt(x) <= 20 && Integer.parseInt(x) >= 0 && Integer.parseInt(y) <= 20 && Integer.parseInt(y) >= 0)
+                return true;
+        }catch (Exception e){return false;}
+        return false;
+    }
 
     public static void main(String[] dab) throws IOException {
 
@@ -82,7 +89,6 @@ public class Client {
         requester.send(args.getBytes(ZMQ.CHARSET),0);
         //receber resposta
         String reply =new String(requester.recv(), StandardCharsets.UTF_8);
-        System.out.println(reply);
         if(reply.equals("ok")){
             System.out.println("Foi registado com sucesso");
         }
@@ -95,40 +101,39 @@ public class Client {
         requester.send(args.getBytes(ZMQ.CHARSET),0);
         //receber resposta
         String reply =new String(requester.recv(), StandardCharsets.UTF_8);
-        if(!reply.equals("invalid_password") && !reply.equals("invalid_username")){
-            districts = new ArrayList<>();
-            System.out.println(reply);
+        if(!reply.equals("invalid_password") && !reply.equals("invalid_username") && !reply.equals("User Bloqueado. Mantenha as normas da DGS e continue em isolamento.")){
+            List<String> districts = new ArrayList<>();
             System.out.println("Login feito com sucesso");
             String hear = "?" + username + "?";
             List<Thread> pidstoKill = null;
-            pidstoKill = new ArrayList<>();
-            Thread x = beginNotifications(subscriber, hear);
+            beginNotifications(subscriber, hear);
             String[] arrOfStr = reply.split(",");
             int i =0;
             while(!arrOfStr[i].equals("end")){
-                System.out.println("entrando");
                 districts.add(arrOfStr[i]);
-                pidstoKill.add(beginNotifications(subscriber, arrOfStr[i]));
+                beginNotifications(subscriber, arrOfStr[i]);
                 i++;
             }
 
-            pidstoKill= menu (input, requester, subscriber,pidstoKill);
-            x.stop();
-            for (Thread tokill : pidstoKill) {
-                tokill.stop();
+            districts= menu (input, requester, subscriber,districts);
+            for (String unsub : districts) {
+                subscriber.unsubscribe(unsub);
             }
         }
-        else
-            System.out.println("Credênciais erradas");
+        else {
+            if(reply.equals("User Bloqueado. Mantenha as normas da DGS e continue em isolamento."))
+                System.out.println("User Bloqueado. Mantenha as normas da DGS e continue em isolamento.");
+            else System.out.println("Credênciais erradas");
+        }
     }
 
-    private static List<Thread> menu(BufferedReader input, ZMQ.Socket requester, ZMQ.Socket subscriber, List<Thread> pidstoKill) throws IOException {
-        List<Thread> pidstoKill2 = pidstoKill;
+    private static List<String> menu(BufferedReader input, ZMQ.Socket requester, ZMQ.Socket subscriber, List<String> districts) throws IOException {
+
         System.out.println("0-quit 1-Nova localização 2-Nr pessoas por localização 3-Estou infetado! 4-Subscrição de Notificações");
         String  option = input.readLine();
 
         boolean aux = true;
-        int x, y;
+        String x, y;
         String args;
         String reply;
         while (aux) {
@@ -138,19 +143,20 @@ public class Client {
                     args = "quit,"+myname+ "," +mypass;
                     requester.send(args.getBytes(ZMQ.CHARSET),0);
                     reply =new String(requester.recv(), StandardCharsets.UTF_8);
-                    System.out.println(reply);
-                    return pidstoKill2;
+                    return districts;
                 case "1":
-                    System.out.println("Inserir coordenada x:");
-                    x = Integer.parseInt(input.readLine());
-                    System.out.println("Inserir coordenada y:");
-                    y = Integer.parseInt(input.readLine());
-                    //enviar novas cooredenadas
+                    x=y="-1";
+                    while(!validXY(x,y)) {
+                        System.out.println("Escreva as suas coordenadas. apenas serão consideradas validas se o valor se encontrar entre 0 e 20.");
+                        System.out.println("Inserir coordenada x:");
+                        x = input.readLine();
+                        System.out.println("Inserir coordenada y:");
+                        y = input.readLine();
+                    }
                     args = "localizacao,"+myname+ "," +mypass + "," + x + "," + y;
                     requester.send(args.getBytes(ZMQ.CHARSET),0);
                     //receber possível notificação de alteração
                     reply =new String(requester.recv(), StandardCharsets.UTF_8);
-                    System.out.println(reply);
                     if(reply.equals("ok")){
                         System.out.println("A sua posição foi atualizada");
                     }
@@ -158,10 +164,14 @@ public class Client {
                         System.out.println("ERROR: Posição não atualizada");
                     break;
                 case "2":
-                    System.out.println("Inserir coordenada x:");
-                    x = Integer.parseInt(input.readLine());
-                    System.out.println("Inserir coordenada y:");
-                    y = Integer.parseInt(input.readLine());
+                    x=y="-1";
+                    while(!validXY(x,y)) {
+                        System.out.println("Escreva as suas coordenadas. apenas serão consideradas validas se o valor se encontrar entre 0 e 20.");
+                        System.out.println("Inserir coordenada x:");
+                        x = input.readLine();
+                        System.out.println("Inserir coordenada y:");
+                        y = input.readLine();
+                    }
                     args = "infoLocalizacao," +myname+ "," +mypass + "," + x + "," + y;
                     requester.send(args.getBytes(ZMQ.CHARSET),0);
                     //receber possível notificação de alteração
@@ -177,19 +187,14 @@ public class Client {
                         //receber possível notificação de alteração
                         reply =new String(requester.recv(), StandardCharsets.UTF_8);
                         System.out.println(reply);
-                        if(reply.equals("ok")){
-                            System.out.println("Foi registado com sucesso");
-                        }
-                        else
-                            System.out.println("ERROR: Credênciais ocupadas");
                         aux = false;
-                        break;
+                        return districts;
                     }
                     break;
                 case "4":
-                    System.out.println("Quer ativar/desativar as notificações?\n Pressione 'Y' para ativar, Pressione 'N' se sim desativar");
+                    System.out.println("Quer ativar/desativar as notificações?\n Pressione '1' para ativar, Pressione '2' se sim desativar");
                     String notifications = input.readLine();
-                    if (notifications.equals("y") || notifications.equals("Y")){
+                    if (notifications.equals("1")){
                         System.out.println("Qual distrito quer subscreber?");
                         String distrito = "";
                         while(true) {
@@ -198,41 +203,33 @@ public class Client {
                             if (distritos.contains(distrito)) break;
                             else System.out.println("Distrito invalido.\n lista de distritos válidos: " + distritos);
                         }
-                        args = "ativar" + "," + myname + "," + mypass + "," + distrito;
-                        requester.send(args.getBytes(ZMQ.CHARSET),0);
-                        reply =new String(requester.recv(), StandardCharsets.UTF_8);
-                        System.out.println(reply);
-                        if(reply.equals("ok")){ //O servidor manda ok se o cliente estiver subscrito a menos de 3 distritos
-                            pidstoKill2.add(beginNotifications(subscriber, distrito));
-                            System.out.println("Notificações públicas ativadas");
-                        }
-                        else
-                            System.out.println("ERROR: Não foi possível ativar notificações públicas");
-                        break;
-                    }
-                    else {
-                        if(notifications.equals("n") || notifications.equals("N")) {
-                            System.out.println("Qual distrito quer deixar de subscrever?");
-                            String distrito = input.readLine();
-                            if(districts.contains(distrito))
-                                districts.remove(distrito);
-                            args = "desativar" + "," + myname + "," + mypass + "," + distrito;
+                        if(!districts.contains(distrito)) {
+                            args = "ativar" + "," + myname + "," + mypass + "," + distrito;
                             requester.send(args.getBytes(ZMQ.CHARSET), 0);
                             reply = new String(requester.recv(), StandardCharsets.UTF_8);
-                            System.out.println("-------------->" + reply);
-                            for (Thread tokill : pidstoKill2) {
-                                tokill.stop();
-                            }
-                            pidstoKill2= null;
-                            pidstoKill2=new ArrayList<>();
-                            String[] arrOfStr = reply.split(",");
-                            int i =0;
-                            while(!arrOfStr[i].equals("end")){
-                                System.out.println(arrOfStr[i]);
-                                pidstoKill2.add(beginNotifications(subscriber, arrOfStr[i]));
-                                i++;
-                            }
+                            if (reply.equals("ok")) { //O servidor manda ok se o cliente estiver subscrito a menos de 3 distritos
+                                districts.add(distrito);
+                                beginNotifications(subscriber, distrito);
+                                System.out.println("Notificações públicas para o distrito " + distrito + " ativadas");
+                            } else
+                                System.out.println("ERROR: Não foi possível ativar notificações públicas");
                             break;
+                        }else {
+                            System.out.println("Ja subscreveu esse distrito"); break;
+                        }
+                    }
+                    else {
+                        if(notifications.equals("2") ) {
+                            System.out.println("Qual distrito quer deixar de subscrever?");
+                            String distrito = input.readLine();
+                            if(districts.contains(distrito)) {
+                                args = "desativar" + "," + myname + "," + mypass + "," + distrito;
+                                subscriber.unsubscribe(distrito.getBytes());
+                                requester.send(args.getBytes(ZMQ.CHARSET), 0);
+                                reply = new String(requester.recv(), StandardCharsets.UTF_8);
+                                break;
+                            }
+                            else {System.out.println("Não tem esse distrito subscrito"); break;}
                         }
                         else break;
                     }
@@ -240,10 +237,10 @@ public class Client {
             System.out.println("0-quit 1-Nova localização 2-Nr pessoas por localização 3-Estou infetado! 4-Subscrição de Notificações");
             option = input.readLine();
         }
-        return pidstoKill;
+        return districts;
     }
 
-    private static Thread beginNotifications(ZMQ.Socket socket, String hear){
+    private static void beginNotifications(ZMQ.Socket socket, String hear){
         String[] args = {"9999"};
         socket.connect("tcp://localhost:" + args[0]);
         Thread t = new Thread(() -> {
@@ -254,14 +251,14 @@ public class Client {
                     socket.subscribe(hear.getBytes());
                 while (true) {
                     byte[] msg = socket.recv();
+                    sleep(200);
                     System.out.println(new String(msg));
-
                 }
             }
-            catch (Exception e){System.out.println("charsh " + hear);}
+            catch (Exception e){;return;}
         });
         t.start();
-        return t;
+        return;
     }
 }
 

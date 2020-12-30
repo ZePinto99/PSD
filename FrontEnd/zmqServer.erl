@@ -1,5 +1,5 @@
 -module(zmqServer).
--import(login_manager,[start/0, create_account/3, close_account/2, login/2]).
+-import(login_manager,[start/0, create_account/4, close_account/2, login/2,setInfetado/1]).
 
 -export([main/0,publisher/0]).
 
@@ -57,6 +57,7 @@ responde_usr(Lista,From, SvSocket,Identity, Distritos,Publisher) ->
             if 
                 Resposta == "invalid_password" -> From ! {{Tipo,"invalid_password",Username}, ?MODULE};
                 Resposta == "invalid_username" -> From ! {{Tipo,"invalid_username",Username}, ?MODULE};
+                Resposta == "Bloq" -> From ! {{Tipo,"User Bloqueado. Mantenha as normas da DGS e continue em isolamento.",Username}, ?MODULE};
                 true -> From ! {{Tipo,listtostring(Resposta),Username}, ?MODULE}
             end;
         Tipo == Registar ->
@@ -65,7 +66,7 @@ responde_usr(Lista,From, SvSocket,Identity, Distritos,Publisher) ->
             {Password,DistrictT} = myFirst(PassT),
             {District,_} = myFirst(DistrictT),
             io:format([Username,Password,District]),
-            Resposta = login_manager:create_account(Username,Password,District),
+            Resposta = login_manager:create_account(Username,Password,District,false),
             From ! {{Tipo,Resposta,Username}, ?MODULE};
         true ->
             {Username,Argswithpass} = myFirst(Info),
@@ -157,6 +158,7 @@ menu(SvSocket, DvSocket,Identity, Username,Info,Option,Publisher,Distrito) ->
 			binary:bin_to_list(Req);
 		<<"infetado">> ->
 			io:format("infetado"),
+            login_manager:setInfetado(Username),
             Tosend = ["infetado,",Username], 
 			chumak:send(DvSocket,Tosend),
 			{ok, Req} = chumak:recv(DvSocket),

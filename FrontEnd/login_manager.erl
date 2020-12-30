@@ -1,5 +1,5 @@
 -module(login_manager).
--export([start/0, create_account/3, close_account/2, login/2,isloggedIn/2,getDist/1,logOut/1, ativar/2, desativar/2]).
+-export([start/0, create_account/4, close_account/2, login/2,isloggedIn/2,setInfetado/1,logOut/1, ativar/2, desativar/2]).
 -import(maps,[update/2, remove/2]).
 -import(lists,[append/2, delete/2]).
 
@@ -14,8 +14,8 @@ rpc(Request) ->
 	end.
 
 
-create_account(Username, Password,District) ->
-	rpc({create_account, Username, Password,District,[]}).
+create_account(Username, Password,District,Infectado) ->
+	rpc({create_account, Username, Password,District,[],Infectado}).
 
 close_account(Username, Password) ->
 	rpc({close_account, Username, Password}).
@@ -28,8 +28,8 @@ isloggedIn(Username,Password) ->
 logOut(Username) ->
 	rpc({logOut,Username}).	
 
-getDist(Username) ->
-	rpc({getDist,Username}).
+setInfetado(Username) ->
+	rpc({setInfetado,Username}).
 
 
 login(Username, Password) ->
@@ -43,11 +43,11 @@ desativar(Username, Not) ->
 
 loop(Accounts) ->
 	receive
-		{{create_account, Username, Password,District,L}, From} ->
+		{{create_account, Username, Password,District,L,Infectado}, From} ->
 			case maps:find(Username, Accounts) of
 				error -> 
 					From ! {"ok", ?MODULE},
-					loop(maps:put(Username, {Password,false,District,L}, Accounts));
+					loop(maps:put(Username, {Password,false,District,L,Infectado}, Accounts));
 				_ ->
 					From ! {"user_exists", ?MODULE},
 					loop(Accounts)
@@ -63,10 +63,12 @@ loop(Accounts) ->
 			end;
 		{{login, Username, Password}, From} ->
 			case maps:find(Username, Accounts) of
-				{ok, {Pass, _,District,L}} -> if 
-					Pass == Password -> From ! {L, ?MODULE},loop(maps:update(Username,{Password,true,District,L},Accounts));
+				{ok, {Pass, _,District,L,false}} -> if 
+					Pass == Password -> From ! {L, ?MODULE},loop(maps:update(Username,{Password,true,District,L,false},Accounts));
 				  	true -> From ! {"invalid_password", ?MODULE},loop(Accounts)
-				end;	  
+				end;
+				{ok, {Pass, _,District,L,true}} -> From ! {"Bloq", ?MODULE},
+					loop(Accounts);	  
 				_ ->
 					From ! {"invalid_username", ?MODULE},
 					loop(Accounts)
@@ -74,27 +76,27 @@ loop(Accounts) ->
 		{{logOut,Username},From} ->
 			io:format("\nEntrei\n"),
 			case maps:find(Username, Accounts) of
-				{ok,{X,true,Y,L}} -> From ! {"ok", ?MODULE},
-								 loop(maps:update(Username,{X,false,Y,L},Accounts));				 
-				true -> io:format("$$$$$$$$$$")				 	
+				{ok,{X,true,Y,L,Infectado}} -> From ! {"ok", ?MODULE},
+								 loop(maps:update(Username,{X,false,Y,L,Infectado},Accounts));				 
+				true -> From ! {"nok", ?MODULE},loop(Accounts)			 	
 			end;		
 		{{isloggedIn,Username,Password},From} ->
 			case maps:find(Username,Accounts) of
-				{ok,{Pass,true,District,L}} ->   
+				{ok,{Pass,true,District,L,Infectado}} ->   
 					if Pass == Password -> 
-						From ! {District, ?MODULE},loop(maps:update(Username,{Password,true,District,L},Accounts));          
+						From ! {District, ?MODULE},loop(maps:update(Username,{Password,true,District,L,Infectado},Accounts));          
 					true -> 
-						From ! {"invalid_password", ?MODULE} end; %%%%%%%%%%%%% erro sem o update
-				{ok,{Pass,false,District,L}} ->  
+						From ! {"invalid_password", ?MODULE} end, loop(Accounts); %%%%%%%%%%%%% erro sem o update
+				{ok,{Pass,false,District,L,Infectado}} ->  
 					if Pass == Password -> 
-						From ! {"notLogged", ?MODULE}, loop(maps:update(Username,{Password,false,District,L},Accounts)); 
+						From ! {"notLogged", ?MODULE}, loop(maps:update(Username,{Password,false,District,L,Infectado},Accounts)); 
 					true -> 
-						From ! {"invalid_password", ?MODULE} end; 
-				_ ->  From ! {"invalid_password", ?MODULE}
+						From ! {"invalid_password", ?MODULE} end, loop(Accounts); 
+				_ ->  From ! {"invalid_password", ?MODULE},loop(Accounts)
 				end;
 		{{ativar,Username,Not},From} ->
 			case maps:find(Username,Accounts) of
-				{ok,{Password,V,District,L}} ->
+				{ok,{Password,V,District,L,Infectado}} ->
 					if length(L) < 3 ->
 						io:format("\n"),
 						io:format("length a funcionar"),
@@ -103,7 +105,7 @@ loop(Accounts) ->
 						io:format(Upd),
 						io:format("\n\n\n\n\n\n\n\n---------------->"),
 						From ! {"ok", ?MODULE},
-						loop(maps:update(Username,{Password,V,District,[Not|L]},Accounts));
+						loop(maps:update(Username,{Password,V,District,[Not|L],Infectado},Accounts));
 					true ->
 						From ! {"nok", ?MODULE},
 						loop(Accounts)
@@ -111,17 +113,17 @@ loop(Accounts) ->
 				end;
 		{{desativar,Username,Not},From} ->
 			case maps:find(Username,Accounts) of
-				{ok,{Password,V,District,L}} ->  
+				{ok,{Password,V,District,L,Infectado}} ->  
 					if length(L) < 4 ->
 						From ! {delete(Not,L), ?MODULE},
-						loop(maps:update(Username,{Password,V,District,delete(Not,L)},Accounts));
+						loop(maps:update(Username,{Password,V,District,delete(Not,L),Infectado},Accounts));
 					true ->
 						From ! {L, ?MODULE},
 						loop(Accounts)
 					end
 				end;								
-		{{getDist,Username},From} ->
+		{{setInfetado,Username},From} ->
 			case maps:find(Username,Accounts) of
-				{ok,{_,_,District,L}} ->  From ! {District, ?MODULE}
+				{ok,{Password,V,District,L,Infectado}} ->   From ! {"ok", ?MODULE},loop(maps:update(Username,{Password,V,District,L,true},Accounts))
 				end
 	end.

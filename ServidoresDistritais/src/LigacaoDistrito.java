@@ -15,7 +15,7 @@ public class LigacaoDistrito {
             replyer.bind("tcp://127.0.0.1:" + args[0]);
             System.out.println("tcp://127.0.0.1:" + args[0]);
 
-            ServidorDistrital sd = new ServidorDistrital(args[1],10);
+            ServidorDistrital sd = new ServidorDistrital(args[1],21);
 
             boolean aux = true;
             while (aux) {
