@@ -105,8 +105,8 @@ public class Client {
             List<String> districts = new ArrayList<>();
             System.out.println("Login feito com sucesso");
             String hear = "?" + username + "?";
-            List<Thread> pidstoKill = null;
             beginNotifications(subscriber, hear);
+            districts.add(hear);
             String[] arrOfStr = reply.split(",");
             int i =0;
             while(!arrOfStr[i].equals("end")){
