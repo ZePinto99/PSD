@@ -130,8 +130,7 @@ menu(SvSocket, DvSocket,Identity, Username,Info,Option,Publisher,Distrito) ->
 			%chumak:send(DvSocket,""),
 			%{ok, Req} = chumak:recv(DvSocket),
 			%sendNotificationDistrito(Publisher,binary:bin_to_list(Req),Distrito),
-			io:format("Recebi confirmação servidor"),
-			binary:bin_to_list(Req);
+			"É Obrigatorio realizar isolamento completo por um periodo minimo de 6 anos.";
 		<<"ativar">> ->
 			io:format("ativar notificacoes"),
 			chumak:send({"ativar"}),

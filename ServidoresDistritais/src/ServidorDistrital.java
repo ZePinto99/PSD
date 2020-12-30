@@ -92,8 +92,34 @@ public class ServidorDistrital {
         List<String> temp = mapa[x][y];
         ArrayList<String> contactosUser = contactos.get(user);
         for(String elem : temp){
-            if(!contactosUser.contains(elem)) contactos.get(user).add(elem);
-            if(!contactos.get(elem).contains(user)) contactos.get(elem).add(user);
+            if(contactosUser!=null && !contactosUser.contains(elem)){
+
+                ArrayList<String> userlist = contactos.get(user);
+                userlist.add(elem);
+                contactos.put(user,userlist);
+
+            }else{
+
+                contactos.put(user,new ArrayList<>());
+                ArrayList<String> userlist = contactos.get(user);
+                userlist.add(elem);
+                contactos.put(user,userlist);
+
+            }
+            if(contactos.get(elem)!= null && !contactos.get(elem).contains(user)){
+
+                ArrayList<String> elemlist = contactos.get(elem);
+                elemlist.add(user);
+                contactos.put(elem,elemlist);
+
+            }else{
+
+                contactos.put(elem,new ArrayList<>());
+                ArrayList<String> elemlist = contactos.get(elem);
+                elemlist.add(user);
+                contactos.put(elem,elemlist);
+
+            }
         }
     }
 
@@ -117,8 +143,11 @@ public class ServidorDistrital {
 
     public String notifInfetado(String infetado) {
         this.numInfetados++;
-        ArrayList<String> list = contactos.get(infetado);
-        String rep = list.stream().map(String::valueOf).collect(Collectors.joining(","));
+        String rep="";
+        if(contactos !=null && contactos.get(infetado)!=null) {
+            ArrayList<String> list = contactos.get(infetado);
+            rep = list.stream().map(String::valueOf).collect(Collectors.joining(","));
+        }
         return rep;
     }
 

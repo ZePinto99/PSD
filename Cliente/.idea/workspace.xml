@@ -23,15 +23,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="fbeae291-ae5b-46c2-9b75-c22ab54ee11b" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/../.idea/PSD.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/dictionaries/Eduardo_Costa.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../ServidoresDistritais/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Client/Client.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Client/Client.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../ServidoresDistritais/src/LigacaoDistrito.java" beforeDir="false" afterPath="$PROJECT_DIR$/../ServidoresDistritais/src/LigacaoDistrito.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FrontEnd/zmqServer.erl" beforeDir="false" afterPath="$PROJECT_DIR$/../FrontEnd/zmqServer.erl" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../ServidoresDistritais/src/ServidorDistrital.java" beforeDir="false" afterPath="$PROJECT_DIR$/../ServidoresDistritais/src/ServidorDistrital.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -61,7 +54,7 @@
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../ServidoresDistritais" />
     <property name="settings.editor.selected.configurable" value="Errors" />
   </component>
   <component name="RecentsManager">
@@ -203,5 +196,27 @@
       </map>
     </option>
     <option name="oldMeFiltersMigrated" value="true" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="268" y="275" key="FileChooserDialogImpl" timestamp="1609324043379">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="268" y="275" key="FileChooserDialogImpl/-1366.0.1366.728/0.0.1920.1040@0.0.1920.1040" timestamp="1609324043379" />
+    <state width="916" height="410" key="GridCell.Tab.0.bottom" timestamp="1609326552285">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="916" height="410" key="GridCell.Tab.0.bottom/-1366.0.1366.728/0.0.1920.1040@0.0.1920.1040" timestamp="1609326552285" />
+    <state width="916" height="410" key="GridCell.Tab.0.center" timestamp="1609326552283">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="916" height="410" key="GridCell.Tab.0.center/-1366.0.1366.728/0.0.1920.1040@0.0.1920.1040" timestamp="1609326552283" />
+    <state width="916" height="410" key="GridCell.Tab.0.left" timestamp="1609326552281">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="916" height="410" key="GridCell.Tab.0.left/-1366.0.1366.728/0.0.1920.1040@0.0.1920.1040" timestamp="1609326552281" />
+    <state width="916" height="410" key="GridCell.Tab.0.right" timestamp="1609326552284">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="916" height="410" key="GridCell.Tab.0.right/-1366.0.1366.728/0.0.1920.1040@0.0.1920.1040" timestamp="1609326552284" />
   </component>
 </project>
