@@ -15,8 +15,11 @@ public class LigacaoDistrito {
             replyer.bind("tcp://127.0.0.1:" + args[0]);
             System.out.println("tcp://127.0.0.1:" + args[0]);
 
+            int port = Integer.parseInt(args[0]);
             ServidorDistrital sd = new ServidorDistrital(args[1],21);
 
+            Diretorio myThread = new Diretorio(sd,port);
+            myThread.start();
             boolean aux = true;
             while (aux) {
                 String option = new String(replyer.recv(), StandardCharsets.UTF_8);
@@ -37,6 +40,59 @@ public class LigacaoDistrito {
                         replyer.send(rep.getBytes(ZMQ.CHARSET),0);
                         break;
                     case "ativar":
+                        break;
+                    case "desativar":
+                        break;
+                }
+            }
+        }
+    }
+
+    public static class Diretorio extends Thread {
+
+        ServidorDistrital sd;
+        String port;
+
+        public Diretorio(ServidorDistrital s, int porta ){
+            sd = s;
+            port = String.valueOf(porta + 30);
+        }
+
+
+        public void run(){
+            ZContext context = new ZContext();
+            ZMQ.Socket replyer = context.createSocket(SocketType.REP);
+            replyer.bind("tcp://127.0.0.1:" + port);
+            System.out.println("tcp://127.0.0.1:" + port);
+            boolean aux = true;
+            while (aux) {
+                String option = new String(replyer.recv(), StandardCharsets.UTF_8);
+                System.out.println(option);
+
+                String[] arrOfStr = option.split(",");
+                String request = arrOfStr[0];
+                switch (request) {
+                    case "getNumUsers":
+                        String reply = String.valueOf(sd.getNumUtilizadores());
+                        replyer.send(reply.getBytes(ZMQ.CHARSET),0);
+                        break;
+                    case "getNumInfected":
+                        reply = String.valueOf(sd.getNumInfetados());
+                        replyer.send(reply.getBytes(ZMQ.CHARSET),0);
+                        break;
+                    case "getRatio":
+                        int infetados    = sd.getNumInfetados();
+                        int utilizadores = sd.getNumUtilizadores();
+                        reply = String.valueOf(infetados) + " em " + String.valueOf(infetados);
+                        replyer.send(reply.getBytes(ZMQ.CHARSET),0);
+                        break;
+                    case "getLocationTop":
+                        reply = sd.top5posicao();
+                        replyer.send(reply.getBytes(ZMQ.CHARSET),0);
+                        break;
+                    case "getUsersCrossed":
+                        reply = String.valueOf(sd.getCrossings());
+                        replyer.send(reply.getBytes(ZMQ.CHARSET),0);
                         break;
                     case "desativar":
                         break;

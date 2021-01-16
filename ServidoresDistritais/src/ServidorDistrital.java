@@ -11,6 +11,7 @@ public class ServidorDistrital {
     private List<String> notificacoes; //pseudo lista de users->sockets a notificar
     private int numUtilizadores;
     private int numInfetados;
+    private int crossings;
 
     public ServidorDistrital(String nome, int aresta) {
         this.nome = nome;
@@ -18,6 +19,33 @@ public class ServidorDistrital {
         this.mapa = new ArrayList[aresta][aresta];
         this.contactos = new HashMap<>();
         this.notificacoes = new ArrayList<>();
+    }
+
+    public String top5posicao() {
+        List<String> posicao = new ArrayList<>();
+        List<Integer> numerodepeeps = new ArrayList<>();
+
+        for (int row = 0; row < aresta; row++)
+            for (int col = 0; col < aresta; col++) {
+                for (int top5 = 0; top5 < 5 && top5 < posicao.size(); top5++) {
+                    if (mapa[row][col] != null) {
+                        if (mapa[row][col].size() > numerodepeeps.get(top5)) {
+                            posicao.add(top5, row + "-" + col);
+                            numerodepeeps.add(top5, mapa[row][col].size());
+                        }
+                    }
+                }
+            }
+
+        String result = "";
+        for(int i = 0; i<5;i++)   {
+            result+= posicao.get(i)+"-"+numerodepeeps.get(i)+",";
+        }
+        return result;
+
+    }
+    public int getCrossings(){
+        return crossings;
     }
 
     public String getNome() {
@@ -126,6 +154,7 @@ public class ServidorDistrital {
         this.numInfetados++;
         String rep="";
         if(contactos !=null && contactos.get(infetado)!=null) {
+            crossings += contactos.get(infetado).size();
             ArrayList<String> list = contactos.get(infetado);
             rep = list.stream().map(String::valueOf).collect(Collectors.joining(","));
         }
