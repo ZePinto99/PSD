@@ -40,9 +40,36 @@ public enum Distrito {
     public static Distrito findDistrict(String i) {
         Distrito[] testEnums = Distrito.values();
         for (Distrito testEnum : testEnums) {
+            System.out.println(testEnum.toString());
             if (testEnum.curr.equals(i)) {
                 return testEnum;
             }
+        }
+        return null;
+    }
+
+    public static int findDistrictPosition(String i) {
+        Distrito[] testEnums = Distrito.values();
+        int count =0;
+        for (Distrito testEnum : testEnums) {
+            System.out.println(testEnum.toString());
+            if (testEnum.curr.equals(i)) {
+                return count;
+            }
+            count++;
+        }
+        return count;
+    }
+
+    public static String findDistrictOfIndex(int i) {
+        Distrito[] testEnums = Distrito.values();
+        int count =0;
+        for (Distrito testEnum : testEnums) {
+
+            if (count == i) {
+                return testEnum.curr;
+            }
+            count++;
         }
         return null;
     }
