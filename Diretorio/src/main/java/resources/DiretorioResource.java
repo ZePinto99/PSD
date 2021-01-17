@@ -5,13 +5,10 @@ import Representation.*;
 import Representation.NumberOfUsr;
 import Service.DistrictService;
 import Service.Location;
-import jdk.net.SocketFlow;
+import javafx.util.Pair;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.TreeMap;
+import java.util.*;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -63,51 +60,69 @@ public class DiretorioResource {
 
     @GET @Path("Racio")
     public Top5District Top5DistrictRacio() {
-        TreeMap<Float,Distrito> respostas = new TreeMap<>();
+        List<Pair<Float,Distrito>> respostas = new ArrayList<>();
 
         Distrito[] lista = Distrito.values();
         DistrictService ds = DistrictService.getInstance();
 
         for(Distrito entry :lista){
-            respostas.put(ds.getRacioOfDistrict(entry.toString()),entry);
+            System.out.println("iter");
+            Pair<Float,Distrito> par = new Pair<>(ds.getRacioOfDistrict(entry.toString()),entry);
+            respostas.add(par);
         }
 
-        String top1 = respostas.get(respostas.lastKey()).toString() + " - " + respostas.lastKey();
-        respostas.remove(respostas.lastKey());
-        String top2 = respostas.get(respostas.lastKey()).toString() + " - " + respostas.lastKey();
-        respostas.remove(respostas.lastKey());
-        String top3 = respostas.get(respostas.lastKey()).toString() + " - " + respostas.lastKey();
-        respostas.remove(respostas.lastKey());
-        String top4 = respostas.get(respostas.lastKey()).toString() + " - " + respostas.lastKey();
-        respostas.remove(respostas.lastKey());
-        String top5 = respostas.get(respostas.lastKey()).toString() + " - " + respostas.lastKey();
+        respostas.sort(new Comparator<Pair<Float, Distrito>>() {
+            @Override
+            public int compare(Pair<Float, Distrito> o1, Pair<Float, Distrito> o2) {
+                if (o1.getKey() > o2.getKey()) {
+                    return 1;
+                } else if (o1.getValue().equals(o2.getValue())) {
+                    return 0;
+                } else {
+                    return -1;
+                }
+            }
+        });
+
+        String top1 = respostas.get(0).getValue().toString() + " - " + respostas.get(0).getKey();
+        String top2 = respostas.get(1).getValue().toString() + " - " + respostas.get(1).getKey();
+        String top3 = respostas.get(2).getValue().toString() + " - " + respostas.get(2).getKey();
+        String top4 = respostas.get(3).getValue().toString() + " - " + respostas.get(3).getKey();
+        String top5 = respostas.get(4).getValue().toString() + " - " + respostas.get(4).getKey();
 
         return new Top5District(Response.status(200).build().getStatus(),top1,top2,top3,top4,top5);
     }
 
     @GET @Path("Locations")
     public Top5District getLocationOfDistrictWithMostPeople() {
-        TreeMap<Integer, Location> respostas = new TreeMap<>();
+        List<Location> respostas = new ArrayList<>();
 
         Distrito[] lista = Distrito.values();
         DistrictService ds = DistrictService.getInstance();
 
         for(Distrito entry :lista){
             List<Location> tmp = ds.getLocationOfDistrictWithMostPeople(entry.toString());
-            for(Location l : tmp){
-                respostas.put(l.getNumInfect(),l);
-            }
+            respostas.addAll(tmp);
         }
 
-        String top1 = respostas.get(respostas.lastKey()).toString();
-        respostas.remove(respostas.lastKey());
-        String top2 = respostas.get(respostas.lastKey()).toString();
-        respostas.remove(respostas.lastKey());
-        String top3 = respostas.get(respostas.lastKey()).toString();
-        respostas.remove(respostas.lastKey());
-        String top4 = respostas.get(respostas.lastKey()).toString();
-        respostas.remove(respostas.lastKey());
-        String top5 = respostas.get(respostas.lastKey()).toString();
+        respostas.sort(new Comparator<Location>() {
+            @Override
+            public int compare(Location o1, Location o2) {
+                if (o1.getNumPessoas() > o2.getNumPessoas()) {
+                    return 1;
+                } else if (o1.getNumPessoas() == o2.getNumPessoas()) {
+                    return 0;
+                } else {
+                    return -1;
+                }
+            }
+        });
+
+        String top1 = respostas.get(0).toString();
+        String top2 = respostas.get(1).toString();
+        String top3 = respostas.get(2).toString();
+        String top4 = respostas.get(3).toString();
+        String top5 = respostas.get(4).toString();
 
 
         return new Top5District(Response.status(200).build().getStatus(),top1,top2,top3,top4,top5);

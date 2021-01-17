@@ -4,16 +4,16 @@ public class Location {
 
     private int x;
     private int y;
-    private int numInfect;
+    private int numPessoas;
     private String distrito;
 
 
 
-    public Location(int x,int y,int numInfetados,String loc){
+    public Location(int x,int y,int numPessoas,String loc){
         this.x = x;
         this.y = y;
         this.distrito = loc;
-        this.numInfect = numInfetados;
+        this.numPessoas = numPessoas;
     }
 
     public int getX() {
@@ -30,14 +30,14 @@ public class Location {
         return distrito;
     }
 
-    public int getNumInfect() {
-        return numInfect;
+    public int getNumPessoas() {
+        return numPessoas;
     }
 
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append(distrito).append(" - ").append(x).append(",").append(y).append(" - ").append(numInfect);
+        sb.append(distrito).append(" - ").append(x).append(",").append(y).append(" - ").append(numPessoas);
         return super.toString();
     }
 }

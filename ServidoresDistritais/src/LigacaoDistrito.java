@@ -56,6 +56,7 @@ public class LigacaoDistrito {
         public Diretorio(ServidorDistrital s, int porta ){
             sd = s;
             port = String.valueOf(porta + 30);
+            System.out.println(port);
         }
 
 
@@ -84,6 +85,7 @@ public class LigacaoDistrito {
                         int infetados    = sd.getNumInfetados();
                         int utilizadores = sd.getNumUtilizadores();
                         float f = (float) infetados/utilizadores;
+                        if(infetados == 0 && utilizadores == 0)f = 0;
                         reply = String.valueOf(f);
                         replyer.send(reply.getBytes(ZMQ.CHARSET),0);
                         break;

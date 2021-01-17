@@ -5,9 +5,11 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
+import ch.qos.logback.classic.pattern.SyslogStartConverter;
 import org.zeromq.SocketType;
 import org.zeromq.ZContext;
 import org.zeromq.ZMQ;
@@ -21,20 +23,28 @@ public class DistrictService {
     private ZContext context;
 
     private DistrictService(){
+        System.out.println("inicio");
 
-        context = new ZContext();
         socketList = new ArrayList<>();
 
+        context = new ZContext();
+            //  Socket to send messages on
         for(int i = 0; i < Distrito.values().length;i++){
+            System.out.println("inicio");
 
-            ZMQ.Socket socket = context.createSocket(SocketType.REQ);
+                int port = portDefault + i;
+                ZMQ.Socket requester = context.createSocket(SocketType.REQ);
+                String processName =
+                        java.lang.management.ManagementFactory.getRuntimeMXBean().getName();
+                long pid =  Long.parseLong(processName.split("@")[0]);
+                requester.setIdentity(String.valueOf(pid).getBytes());
+                requester.connect("tcp://127.0.0.1:" + port);
 
-            int port = portDefault + i;
 
-            socket.bind("tcp://*:" + port);
+                socketList.add(requester);
+                System.out.println("fim");
+            }
 
-            socketList.add(socket);
-        }
 
 
     }
@@ -49,20 +59,28 @@ public class DistrictService {
 
 
     public int getNumberOfUsersInDistrict(String distrito) {
-        String resposta;
+        String resposta = null;
 
         ZMQ.Socket socket = socketList.get(Distrito.findDistrictPosition(distrito));
 
         String str = "getNumUsers";
 
-        socket.send(str);
+        System.out.println("mandei msg");
+        try {
+            socket.send(str.getBytes(ZMQ.CHARSET),0);
+            resposta =new String(socket.recv(), StandardCharsets.UTF_8);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
 
-        resposta = socket.recvStr();
+
+        System.out.println("recebi msg");
 
 
         return Integer.parseInt(resposta);
 
     }
+
 
     public int getNumberOfInfectedInDistrict(String distrito){
         String resposta;
@@ -86,11 +104,18 @@ public class DistrictService {
 
         String str = "getRatio";
 
-        socket.send(str);
 
-        resposta = socket.recvStr();
+        socket.send(str.getBytes(ZMQ.CHARSET),0);
+        resposta =new String(socket.recv(), StandardCharsets.UTF_8);
 
-        return Float.parseFloat(resposta);
+        System.out.println(resposta);
+        float idk = 2;
+        try {
+             idk = Float.parseFloat(resposta);
+        }catch (Exception e){e.printStackTrace();
+        }
+
+        return idk ;
 
     }
 
