@@ -25,6 +25,9 @@ public class ServidorDistrital {
         List<String> posicao = new ArrayList<>();
         List<Integer> numerodepeeps = new ArrayList<>();
 
+        for(int i=0; i<5; i++)
+            numerodepeeps.add(0);
+
         for (int row = 0; row < aresta; row++)
             for (int col = 0; col < aresta; col++) {
                 for (int top5 = 0; top5 < 5 && top5 < posicao.size(); top5++) {
@@ -39,7 +42,7 @@ public class ServidorDistrital {
             }
 
         String result = "";
-        for(int i = 0; i<5;i++)   {
+        for(int i = 0; i<5 && i<posicao.size();i++)   {
             result+= posicao.get(i)+"-"+numerodepeeps.get(i)+",";
         }
         return result;
