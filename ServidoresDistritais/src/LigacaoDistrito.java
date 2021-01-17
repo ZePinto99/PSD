@@ -83,7 +83,8 @@ public class LigacaoDistrito {
                     case "getRatio":
                         int infetados    = sd.getNumInfetados();
                         int utilizadores = sd.getNumUtilizadores();
-                        reply = String.valueOf(infetados) + " em " + String.valueOf(infetados);
+                        float f = (float) infetados/utilizadores;
+                        reply = String.valueOf(f);
                         replyer.send(reply.getBytes(ZMQ.CHARSET),0);
                         break;
                     case "getLocationTop":
