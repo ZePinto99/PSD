@@ -32,6 +32,7 @@ public class ServidorDistrital {
                         if (mapa[row][col].size() > numerodepeeps.get(top5)) {
                             posicao.add(top5, row + "-" + col);
                             numerodepeeps.add(top5, mapa[row][col].size());
+                            break;
                         }
                     }
                 }
