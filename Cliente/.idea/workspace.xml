@@ -24,13 +24,7 @@
   <component name="ChangeListManager">
     <list default="true" id="fbeae291-ae5b-46c2-9b75-c22ab54ee11b" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Diretorio/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../Diretorio/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Diretorio/src/main/java/Representation/NumberOfSick.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Diretorio/src/main/java/Representation/NumberOfSick.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Diretorio/src/main/java/Service/DistrictService.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Diretorio/src/main/java/Service/DistrictService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Diretorio/src/main/java/Service/Location.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Diretorio/src/main/java/Service/Location.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Diretorio/src/main/java/resources/DiretorioResource.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Diretorio/src/main/java/resources/DiretorioResource.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../ServidoresDistritais/src/LigacaoDistrito.java" beforeDir="false" afterPath="$PROJECT_DIR$/../ServidoresDistritais/src/LigacaoDistrito.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../ServidoresDistritais/src/ServidorDistrital.java" beforeDir="false" afterPath="$PROJECT_DIR$/../ServidoresDistritais/src/ServidorDistrital.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Client/Client.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Client/Client.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
