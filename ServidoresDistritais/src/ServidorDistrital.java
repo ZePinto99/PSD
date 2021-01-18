@@ -12,6 +12,8 @@ public class ServidorDistrital {
     private int numUtilizadores;
     private int numInfetados;
     private int crossings;
+    private Integer[][] maxPorLocalizacao; //matriz de ArrayLists de IDs dos users, para cada localização do distrito
+
 
     public ServidorDistrital(String nome, int aresta) {
         this.nome = nome;
@@ -19,35 +21,52 @@ public class ServidorDistrital {
         this.mapa = new ArrayList[aresta][aresta];
         this.contactos = new HashMap<>();
         this.notificacoes = new ArrayList<>();
+        this.maxPorLocalizacao = new Integer[aresta][aresta];
+        for(int i=0; i<aresta; i++)
+            for(int j=0; j<aresta; j++)
+                maxPorLocalizacao[i][j]=0;
     }
 
     public String top5posicao() {
-        List<String> posicao = new ArrayList<>();
-        List<Integer> numerodepeeps = new ArrayList<>();
 
-        for(int i=0; i<5; i++)
-            numerodepeeps.add(0);
+        Map<String,Integer> mapAux = new HashMap<>();
 
-        for (int row = 0; row < aresta; row++)
-            for (int col = 0; col < aresta; col++) {
-                for (int top5 = 0; top5 < 5 && top5 < posicao.size(); top5++) {
-                    if (mapa[row][col] != null) {
-                        if (mapa[row][col].size() > numerodepeeps.get(top5)) {
-                            posicao.add(top5, row + "-" + col);
-                            numerodepeeps.add(top5, mapa[row][col].size());
-                            break;
-                        }
-                    }
-                }
+        for(int i=0; i<aresta; i++) {
+            for (int j = 0; j < aresta; j++) {
+                String posicao = x + "," + y;
+                mapAux.put(posicao, maxPorLocalizacao[x][y])
             }
+        }
+
+        List<String> top5localizacoes = topNKeys(mapAux,5);
 
         String result = "";
-        for(int i = 0; i<5 && i<posicao.size();i++)   {
-            result+= posicao.get(i)+"-"+numerodepeeps.get(i)+",";
+        for(int i = 0; i<5; i++)   {
+            String posicao = top5localizacoes.get(i);
+            result+= posicao + "-" + mapAux.get(posicao) + ",";
         }
         return result;
-
     }
+
+    private List<String> topNKeys(final HashMap<String, Integer> map, int n) {
+
+        PriorityQueue<String> topN = new PriorityQueue<String>(n, new Comparator<String>() {
+            public int compare(String s1, String s2) {
+                return Integer.compare(map.get(s1), map.get(s2));
+            }
+        });
+
+        for (String key : map.keySet()) {
+            if (topN.size() < n)
+                topN.add(key);
+            else if (map.get(topN.peek()) < map.get(key)) {
+                topN.poll();
+                topN.add(key);
+            }
+        }
+        return (List) Arrays.asList(topN.toArray());
+    }
+
     public int getCrossings(){
         return crossings;
     }
@@ -119,6 +138,7 @@ public class ServidorDistrital {
         if(!mapa[x][y].contains(user)){
             this.atualizarContactos(user, x, y);
             mapa[x][y].add(user);
+            this.atualizarMax(x,y);
             if(primeiraEntrada)
                 rep ="entrou,acabou";
         }
@@ -126,6 +146,13 @@ public class ServidorDistrital {
 
         return rep;
     }
+
+    private void atualizarMax(int x, int y){
+        int sizeAtual = mapa[x][y].size();
+        int sizeMax = maxPorLocalizacao[x][y].size();
+        if(sizeAtual > sizeMax) this.maxPorLocalizacao[x][y] = sizeAtual;
+    }
+
 
     private void atualizarContactos(String user, int x, int y) {
         List<String> temp = mapa[x][y];

@@ -98,12 +98,6 @@ loop(Accounts) ->
 			case maps:find(Username,Accounts) of
 				{ok,{Password,V,District,L,Infectado}} ->
 					if length(L) < 3 ->
-						io:format("\n"),
-						io:format("length a funcionar"),
-						Upd = [Not,L],
-						io:format("\n\n\n\n\n\n\n\n---------------->"),
-						io:format(Upd),
-						io:format("\n\n\n\n\n\n\n\n---------------->"),
 						From ! {"ok", ?MODULE},
 						loop(maps:update(Username,{Password,V,District,[Not|L],Infectado},Accounts));
 					true ->
