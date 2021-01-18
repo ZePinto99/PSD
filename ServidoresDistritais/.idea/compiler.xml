@@ -7,9 +7,11 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="zeromq" />
+        <module name="ServidoresDistritais" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="ServidoresDistritais" target="1.8" />
       <module name="zeromq" target="1.8" />
     </bytecodeTargetLevel>
   </component>
