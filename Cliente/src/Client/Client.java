@@ -236,13 +236,11 @@ public class Client {
                 case "5":
                     URL url = new URL("http://localhost:8080/User?distrito=Braga");
                     HttpURLConnection con = (HttpURLConnection) url.openConnection();
+
                     con.setRequestMethod("GET");
 
-                    con.setDoOutput(true);
-                    DataOutputStream out = new DataOutputStream(con.getOutputStream());
-                    out.writeBytes("");
-                    out.flush();
-                    out.close();
+                    con.connect();
+                    System.out.println(con.getResponseMessage());
                     BufferedReader in = new BufferedReader(
                             new InputStreamReader(con.getInputStream()));
                     String inputLine;
@@ -253,6 +251,79 @@ public class Client {
                     }
                     in.close();
                     con.disconnect();
+                    break;
+                case "6":
+                    url = new URL("http://localhost:8080/Infected?distrito=Braga");
+                    con = (HttpURLConnection) url.openConnection();
+
+                    con.setRequestMethod("GET");
+
+                    con.connect();
+                    System.out.println(con.getResponseMessage());
+                    in = new BufferedReader(
+                            new InputStreamReader(con.getInputStream()));
+                    content = new StringBuffer();
+                    while ((inputLine = in.readLine()) != null) {
+                        content.append(inputLine);
+                        System.out.println(inputLine);
+                    }
+                    in.close();
+                    con.disconnect();
+                    break;
+                case "7":
+                    url = new URL("http://localhost:8080/Racio");
+                    con = (HttpURLConnection) url.openConnection();
+
+                    con.setRequestMethod("GET");
+
+                    con.connect();
+                    System.out.println(con.getResponseMessage());
+                    in = new BufferedReader(
+                            new InputStreamReader(con.getInputStream()));
+                    content = new StringBuffer();
+                    while ((inputLine = in.readLine()) != null) {
+                        content.append(inputLine);
+                        System.out.println(inputLine);
+                    }
+                    in.close();
+                    con.disconnect();
+                    break;
+                case "8":
+                    url = new URL("http://localhost:8080/Locations");
+                    con = (HttpURLConnection) url.openConnection();
+
+                    con.setRequestMethod("GET");
+
+                    con.connect();
+                    System.out.println(con.getResponseMessage());
+                    in = new BufferedReader(
+                            new InputStreamReader(con.getInputStream()));
+                    content = new StringBuffer();
+                    while ((inputLine = in.readLine()) != null) {
+                        content.append(inputLine);
+                        System.out.println(inputLine);
+                    }
+                    in.close();
+                    con.disconnect();
+                    break;
+                case "9":
+                    url = new URL("http://localhost:8080/Disease");
+                    con = (HttpURLConnection) url.openConnection();
+
+                    con.setRequestMethod("GET");
+
+                    con.connect();
+                    System.out.println(con.getResponseMessage());
+                    in = new BufferedReader(
+                            new InputStreamReader(con.getInputStream()));
+                    content = new StringBuffer();
+                    while ((inputLine = in.readLine()) != null) {
+                        content.append(inputLine);
+                        System.out.println(inputLine);
+                    }
+                    in.close();
+                    con.disconnect();
+                    break;
 
             }
             System.out.println("0-quit 1-Nova localização 2-Nr pessoas por localização 3-Estou infetado! 4-Subscrição de Notificações");
