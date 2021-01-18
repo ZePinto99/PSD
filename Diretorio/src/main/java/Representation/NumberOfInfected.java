@@ -23,7 +23,7 @@ public class NumberOfInfected {
     }
 
     @JsonProperty("Distrito")
-    public String getContent() {
+    public String getDistrito() {
         return distrito;
     }
 

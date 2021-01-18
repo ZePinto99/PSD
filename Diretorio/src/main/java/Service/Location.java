@@ -38,6 +38,6 @@ public class Location {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append(distrito).append(" - ").append(x).append(",").append(y).append(" - ").append(numPessoas);
-        return super.toString();
+        return sb.toString();
     }
 }

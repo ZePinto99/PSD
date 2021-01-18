@@ -33,7 +33,7 @@ public class ServidorDistrital {
 
         for(int x=0; x<aresta; x++) {
             for (int y = 0; y < aresta; y++) {
-                String posicao = x + "," + y;
+                String posicao = x + "-" + y;
                 mapAux.put(posicao, maxPorLocalizacao[x][y]);
             }
         }

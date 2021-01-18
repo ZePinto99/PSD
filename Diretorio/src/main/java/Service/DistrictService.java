@@ -30,7 +30,6 @@ public class DistrictService {
         context = new ZContext();
             //  Socket to send messages on
         for(int i = 0; i < Distrito.values().length;i++){
-            System.out.println("inicio");
 
                 int port = portDefault + i;
                 ZMQ.Socket requester = context.createSocket(SocketType.REQ);
@@ -42,7 +41,6 @@ public class DistrictService {
 
 
                 socketList.add(requester);
-                System.out.println("fim");
             }
 
 
@@ -144,7 +142,7 @@ public class DistrictService {
 
     }
 
-    public int getUsersWhoCrossedWithSickPeople(String distrito){
+    public float getUsersWhoCrossedWithSickPeople(String distrito){
         String resposta;
 
         ZMQ.Socket socket = socketList.get(Distrito.findDistrictPosition(distrito));
@@ -155,7 +153,7 @@ public class DistrictService {
 
         resposta = socket.recvStr();
 
-        return Integer.parseInt(resposta);
+        return Float.parseFloat(resposta);
 
     }
 

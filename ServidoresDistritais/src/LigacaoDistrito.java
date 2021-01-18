@@ -75,7 +75,6 @@ public class LigacaoDistrito {
                 switch (request) {
                     case "getNumUsers":
                         String reply = String.valueOf(sd.getNumUtilizadores());
-                        System.out.println("resposta"+ reply);
                         replyer.send(reply.getBytes(ZMQ.CHARSET),0);
                         break;
                     case "getNumInfected":

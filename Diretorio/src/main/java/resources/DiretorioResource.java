@@ -1,13 +1,11 @@
 package resources;
 
-import Representation.BadRequest;
 import Representation.*;
 import Representation.NumberOfUsr;
 import Service.DistrictService;
 import Service.Location;
 import javafx.util.Pair;
 
-import java.io.IOException;
 import java.util.*;
 
 import javax.ws.rs.*;
@@ -141,8 +139,8 @@ public class DiretorioResource {
     @GET @Path("Disease")
     public NumberOfSick numberOfInfectedOfDistrict() {
 
-        int answer;
-        List<Integer> respostas = new ArrayList<>();
+        float answer;
+        List<Float> respostas = new ArrayList<>();
 
         DistrictService ds = DistrictService.getInstance();
 
@@ -154,7 +152,9 @@ public class DiretorioResource {
         for(int i = 0; i< respostas.size();i++){
             sum += respostas.get(i);
         }
-        answer = sum/respostas.size();
+
+        float size = respostas.size();
+        answer = sum/size;
 
 
         return new NumberOfSick(Response.status(200).build().getStatus(), answer);
