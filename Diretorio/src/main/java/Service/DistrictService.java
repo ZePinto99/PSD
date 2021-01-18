@@ -136,6 +136,7 @@ public class DistrictService {
         String [] parser = resposta.split(",");
         for(String s :parser){
             String[] elem = s.split("-");
+            if(elem[0].isEmpty() ||elem[1].isEmpty() || elem[2].isEmpty())continue;
             Location loc = new Location(Integer.parseInt(elem[0]),Integer.parseInt(elem[1]),Integer.parseInt(elem[2]),distrito);
             answer.add(loc);
         }
