@@ -25,12 +25,6 @@
     <list default="true" id="fbeae291-ae5b-46c2-9b75-c22ab54ee11b" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Diretorio/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../Diretorio/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Diretorio/src/main/java/Representation/NumberOfSick.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Diretorio/src/main/java/Representation/NumberOfSick.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Diretorio/src/main/java/Service/DistrictService.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Diretorio/src/main/java/Service/DistrictService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Diretorio/src/main/java/Service/Location.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Diretorio/src/main/java/Service/Location.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Diretorio/src/main/java/resources/DiretorioResource.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Diretorio/src/main/java/resources/DiretorioResource.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../ServidoresDistritais/src/LigacaoDistrito.java" beforeDir="false" afterPath="$PROJECT_DIR$/../ServidoresDistritais/src/LigacaoDistrito.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../ServidoresDistritais/src/ServidorDistrital.java" beforeDir="false" afterPath="$PROJECT_DIR$/../ServidoresDistritais/src/ServidorDistrital.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -178,7 +172,7 @@
       <workItem from="1609323437383" duration="396000" />
       <workItem from="1609371309901" duration="1090000" />
       <workItem from="1610921049741" duration="1245000" />
-      <workItem from="1610982317295" duration="5664000" />
+      <workItem from="1610982317295" duration="8555000" />
     </task>
     <servers />
   </component>
@@ -204,30 +198,30 @@
     <state x="268" y="275" key="FileChooserDialogImpl/-1366.0.1366.728/0.0.1920.1040@0.0.1920.1040" timestamp="1609324043379" />
     <state x="191" y="193" key="FileChooserDialogImpl/0.0.1366.728@0.0.1366.728" timestamp="1609372039676" />
     <state x="268" y="276" key="FileChooserDialogImpl/0.0.1920.1040@0.0.1920.1040" timestamp="1610921061199" />
-    <state width="1877" height="368" key="GridCell.Tab.0.bottom" timestamp="1610991323826">
+    <state width="1877" height="368" key="GridCell.Tab.0.bottom" timestamp="1610995894138">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1877" height="410" key="GridCell.Tab.0.bottom/-1366.0.1366.728/0.0.1920.1040@0.0.1920.1040" timestamp="1609361324369" />
     <state width="637" height="446" key="GridCell.Tab.0.bottom/0.0.1366.728@0.0.1366.728" timestamp="1609372411879" />
-    <state width="1877" height="368" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1610991323826" />
-    <state width="1877" height="368" key="GridCell.Tab.0.center" timestamp="1610991323825">
+    <state width="1877" height="368" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1610995894138" />
+    <state width="1877" height="368" key="GridCell.Tab.0.center" timestamp="1610995894137">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1877" height="410" key="GridCell.Tab.0.center/-1366.0.1366.728/0.0.1920.1040@0.0.1920.1040" timestamp="1609361324369" />
     <state width="637" height="446" key="GridCell.Tab.0.center/0.0.1366.728@0.0.1366.728" timestamp="1609372411879" />
-    <state width="1877" height="368" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1610991323825" />
-    <state width="1877" height="368" key="GridCell.Tab.0.left" timestamp="1610991323825">
+    <state width="1877" height="368" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1610995894137" />
+    <state width="1877" height="368" key="GridCell.Tab.0.left" timestamp="1610995894137">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1877" height="410" key="GridCell.Tab.0.left/-1366.0.1366.728/0.0.1920.1040@0.0.1920.1040" timestamp="1609361324369" />
     <state width="637" height="446" key="GridCell.Tab.0.left/0.0.1366.728@0.0.1366.728" timestamp="1609372411879" />
-    <state width="1877" height="368" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1610991323825" />
-    <state width="1877" height="368" key="GridCell.Tab.0.right" timestamp="1610991323825">
+    <state width="1877" height="368" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1610995894137" />
+    <state width="1877" height="368" key="GridCell.Tab.0.right" timestamp="1610995894137">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1877" height="410" key="GridCell.Tab.0.right/-1366.0.1366.728/0.0.1920.1040@0.0.1920.1040" timestamp="1609361324369" />
     <state width="637" height="446" key="GridCell.Tab.0.right/0.0.1366.728@0.0.1366.728" timestamp="1609372411879" />
-    <state width="1877" height="368" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1610991323825" />
+    <state width="1877" height="368" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1610995894137" />
     <state x="777" y="434" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1609347752904">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
