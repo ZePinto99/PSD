@@ -29,10 +29,10 @@ public class ServidorDistrital {
 
     public String top5posicao() {
 
-        Map<String,Integer> mapAux = new HashMap<>();
+        HashMap<String,Integer> mapAux = new HashMap<>();
 
-        for(int i=0; i<aresta; i++) {
-            for (int j = 0; j < aresta; j++) {
+        for(int x=0; x<aresta; x++) {
+            for (int y = 0; y < aresta; y++) {
                 String posicao = x + "," + y;
                 mapAux.put(posicao, maxPorLocalizacao[x][y]);
             }
@@ -149,7 +149,7 @@ public class ServidorDistrital {
 
     private void atualizarMax(int x, int y){
         int sizeAtual = mapa[x][y].size();
-        int sizeMax = maxPorLocalizacao[x][y].size();
+        int sizeMax = maxPorLocalizacao[x][y];
         if(sizeAtual > sizeMax) this.maxPorLocalizacao[x][y] = sizeAtual;
     }
 
