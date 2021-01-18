@@ -75,11 +75,11 @@ public class DiretorioResource {
             @Override
             public int compare(Pair<Float, Distrito> o1, Pair<Float, Distrito> o2) {
                 if (o1.getKey() > o2.getKey()) {
-                    return 1;
+                    return -1;
                 } else if (o1.getValue().equals(o2.getValue())) {
                     return 0;
                 } else {
-                    return -1;
+                    return 1;
                 }
             }
         });
@@ -109,20 +109,29 @@ public class DiretorioResource {
             @Override
             public int compare(Location o1, Location o2) {
                 if (o1.getNumPessoas() > o2.getNumPessoas()) {
-                    return 1;
+                    return -1;
                 } else if (o1.getNumPessoas() == o2.getNumPessoas()) {
                     return 0;
                 } else {
-                    return -1;
+                    return 1;
                 }
             }
         });
 
-        String top1 = respostas.get(0).toString();
-        String top2 = respostas.get(1).toString();
-        String top3 = respostas.get(2).toString();
-        String top4 = respostas.get(3).toString();
-        String top5 = respostas.get(4).toString();
+        List<String> tops = new ArrayList<>();
+
+        for(Location l : respostas){
+            tops.add(l.toString());
+        }
+        while (tops.size()< 5){
+            tops.add(" ");
+        }
+
+        String top1 = tops.get(0);
+        String top2 = tops.get(1);
+        String top3 = tops.get(2);
+        String top4 = tops.get(3);
+        String top5 = tops.get(4);
 
 
         return new Top5District(Response.status(200).build().getStatus(),top1,top2,top3,top4,top5);

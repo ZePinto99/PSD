@@ -17,15 +17,12 @@ main() ->
 loop(SvSocket, Distritos,Publisher) ->
 	%recebe um pedido registo/login
     {ok, [Identity, <<>>, Reply]} = chumak:recv_multipart(SvSocket),
-    io:format("\n"),
-    io:format(Reply),
-    io:format("\n"),
     Lista = string:split(Reply,",",all),
     myForEach(Lista),
-    io:format("Before respond_usr\n"),
+
     %Vai fazer o registo/login com as funções do login_manager
     responde_usr(Lista, self(), Distritos,Publisher),
-    io:format("After respond_usr\n"),
+
     receive
         {{_,Result,_}, ?MODULE} -> io:format("received ~p~n", [Result]),
         chumak:send_multipart(SvSocket, [Identity, <<>>, list_to_binary(Result)])    
@@ -47,13 +44,9 @@ responde_usr(Lista,From, Distritos,Publisher) ->
     Registar = <<"registar">>,
     if
         Tipo == Login ->
-            io:format("Entrei login\n"),
             {Username,PassT} = myFirst(Info),
             {Pass,_} = myFirst(PassT),
             Resposta = login_manager:login(Username,Pass),
-            io:format("\n\n\n\n\n\n\n\n---------------->"),
-            io:format(Resposta),
-            io:format("\n\n\n\n\n\n\n\n---------------->"),
             if 
                 Resposta == "invalid_password" -> From ! {{Tipo,"invalid_password",Username}, ?MODULE};
                 Resposta == "invalid_username" -> From ! {{Tipo,"invalid_username",Username}, ?MODULE};
@@ -61,7 +54,6 @@ responde_usr(Lista,From, Distritos,Publisher) ->
                 true -> From ! {{Tipo,listtostring(Resposta),Username}, ?MODULE}
             end;
         Tipo == Registar ->
-            io:format("Entrei registar\n"),
             {Username,PassT} = myFirst(Info),
             {Password,DistrictT} = myFirst(PassT),
             {District,_} = myFirst(DistrictT),
@@ -102,26 +94,20 @@ connectDistrict(X,[Distrito|Next],Distritos) ->
 
 %vai ter de receber username/id
 menu(DvSocket, Username,Info,Option,Publisher,Distrito) ->
-%System.out.println("0-quit 1-Nova localização 2-Nr pessoas por localização 3-Estou infetado! 4-Subscrição de Notificações");
-	io:format("\nMain menu\n"),
     
 	%recebe a opção selecionada pelo cliente    
     
 	case Option of
 		<<"quit">> ->
-			io:format("cliente quer sair"),
             login_manager:logOut(Username);
 		<<"localizacao">> ->
-			io:format("localizacao\n"),
             {X,Y} = myFirst(Info),
             Tosend = ["localizacao,",Username,",",X,",",Y], 
             io:format(Tosend),
 			chumak:send(DvSocket,Tosend),
 			{ok,DistRep} = chumak:recv(DvSocket),
             Lista = string:split(DistRep,",",all),
-            io:format("yoooo\n"),
             {Word,Tail} = myFirst(Lista),
-            io:format("yeeeee\n"),
             if
                 Word == <<"vazia">> ->
                     {OX,OY}= myFirst(Tail),
@@ -145,7 +131,7 @@ menu(DvSocket, Username,Info,Option,Publisher,Distrito) ->
             %sendNotificationDistrito(),
 			
         <<"infoLocalizacao">> ->
-			io:format("infoLocalizacao"),
+			io:format(" infoLocalizacao"),
 			{X,Y} = myFirst(Info),
             Tosend = ["infoLocalizacao,",Username,",",X,",",Y],
 			chumak:send(DvSocket,Tosend),

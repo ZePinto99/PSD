@@ -75,6 +75,7 @@ public class LigacaoDistrito {
                 switch (request) {
                     case "getNumUsers":
                         String reply = String.valueOf(sd.getNumUtilizadores());
+                        System.out.println("resposta"+ reply);
                         replyer.send(reply.getBytes(ZMQ.CHARSET),0);
                         break;
                     case "getNumInfected":
@@ -91,6 +92,7 @@ public class LigacaoDistrito {
                         break;
                     case "getLocationTop":
                         reply = sd.top5posicao();
+                        System.out.println(reply);
                         replyer.send(reply.getBytes(ZMQ.CHARSET),0);
                         break;
                     case "getUsersCrossed":
