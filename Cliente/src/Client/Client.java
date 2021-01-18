@@ -129,7 +129,7 @@ public class Client {
 
     private static List<String> menu(BufferedReader input, ZMQ.Socket requester, ZMQ.Socket subscriber, List<String> districts) throws IOException {
 
-        System.out.println("0-quit 1-Nova localização 2-Nr pessoas por localização 3-Estou infetado! 4-Subscrição de Notificações");
+        System.out.println("0-quit 1-Nova localização 2-Nr pessoas por localização 3-Estou infetado! 4-Subscrição de Notificações \n5- Número de Users num distrito 6- Número de infetados num distrito 7- Ratio de infetados num distrito \n8- Top 5 de posições que tiveram mais users 9- Número médio de Crossings com infetados pelos distritos");
         String  option = input.readLine();
 
         boolean aux = true;
@@ -234,7 +234,16 @@ public class Client {
                         else break;
                     }
                 case "5":
-                    URL url = new URL("http://localhost:8080/User?distrito=Braga");
+                    System.out.println("Qual distrito quer subscreber?");
+                    String distrito = "";
+                    while(true) {
+                        distrito = input.readLine();
+                        List<String> distritos = Arrays.asList("Lisboa", "Porto", "Braga", "Setubal", "Aveiro", "Faro", "Leiria", "Coimbra", "Santarem", "Viseu", "Madeira", "Acores", "Viana Do Castelo", "Vila Real", "Castelo Branco", "Evora", "Guarda", "Beja", "Braganca", "Portalegre");
+                        if (distritos.contains(distrito)) break;
+                        else System.out.println("Distrito invalido.\n lista de distritos válidos: " + distritos);
+                    }
+
+                    URL url = new URL("http://localhost:8080/User?distrito=" + distrito);
                     HttpURLConnection con = (HttpURLConnection) url.openConnection();
 
                     con.setRequestMethod("GET");
@@ -253,7 +262,15 @@ public class Client {
                     con.disconnect();
                     break;
                 case "6":
-                    url = new URL("http://localhost:8080/Infected?distrito=Braga");
+                    System.out.println("Qual distrito quer subscreber?");
+                    distrito = "";
+                    while(true) {
+                        distrito = input.readLine();
+                        List<String> distritos = Arrays.asList("Lisboa", "Porto", "Braga", "Setubal", "Aveiro", "Faro", "Leiria", "Coimbra", "Santarem", "Viseu", "Madeira", "Acores", "Viana Do Castelo", "Vila Real", "Castelo Branco", "Evora", "Guarda", "Beja", "Braganca", "Portalegre");
+                        if (distritos.contains(distrito)) break;
+                        else System.out.println("Distrito invalido.\n lista de distritos válidos: " + distritos);
+                    }
+                    url = new URL("http://localhost:8080/Infected?distrito=" + distrito);
                     con = (HttpURLConnection) url.openConnection();
 
                     con.setRequestMethod("GET");
@@ -267,6 +284,7 @@ public class Client {
                         content.append(inputLine);
                         System.out.println(inputLine);
                     }
+                    
                     in.close();
                     con.disconnect();
                     break;
@@ -326,7 +344,7 @@ public class Client {
                     break;
 
             }
-            System.out.println("0-quit 1-Nova localização 2-Nr pessoas por localização 3-Estou infetado! 4-Subscrição de Notificações");
+            System.out.println("0-quit 1-Nova localização 2-Nr pessoas por localização 3-Estou infetado! 4-Subscrição de Notificações \n5- Número de Users num distrito 6- Número de infetados num distrito 7- Ratio de infetados num distrito \n8- Top 5 de posições que tiveram mais users 9- Número médio de Crossings com infetados pelos distritos");
             option = input.readLine();
         }
         return districts;
