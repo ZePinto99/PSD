@@ -4,10 +4,10 @@ import org.zeromq.SocketType;
 import org.zeromq.ZContext;
 import org.zeromq.ZMQ;
 import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 import static java.lang.Thread.sleep;
 
@@ -233,6 +233,27 @@ public class Client {
                         }
                         else break;
                     }
+                case "5":
+                    URL url = new URL("http://localhost:8080/User?distrito=Braga");
+                    HttpURLConnection con = (HttpURLConnection) url.openConnection();
+                    con.setRequestMethod("GET");
+
+                    con.setDoOutput(true);
+                    DataOutputStream out = new DataOutputStream(con.getOutputStream());
+                    out.writeBytes("");
+                    out.flush();
+                    out.close();
+                    BufferedReader in = new BufferedReader(
+                            new InputStreamReader(con.getInputStream()));
+                    String inputLine;
+                    StringBuffer content = new StringBuffer();
+                    while ((inputLine = in.readLine()) != null) {
+                        content.append(inputLine);
+                        System.out.println(inputLine);
+                    }
+                    in.close();
+                    con.disconnect();
+
             }
             System.out.println("0-quit 1-Nova localização 2-Nr pessoas por localização 3-Estou infetado! 4-Subscrição de Notificações");
             option = input.readLine();
